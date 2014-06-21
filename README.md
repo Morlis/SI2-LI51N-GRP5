@@ -3,6 +3,12 @@ SI2-LI51N-GRP5
 
 Sistemas de Informação II - Trabalho Prático 3 - Grupo 5
 
+##### Utilizar ficheiros de SQL
+Ordem de execução dos ficheiros
+1. Modelo_incial.sql
+2. Extensoes.sql
+3. Dados.sql
+
 ##### Restrições de integridade adicionadas ao modelo inícial
 
 Valor inícial e conjunto de valores
