@@ -31,3 +31,14 @@ CREATE TABLE Funcionario(
   dataNasc date not null
 )
 ```
+[Sequência](http://msdn.microsoft.com/en-us/library/ff878058.aspx) para o campo **cod** da tabela Instalacao
+```sql
+CREATE SEQUENCE dbo.InstalacaoCod AS int START WITH 1 INCREMENT BY 1
+
+create table Instalacao(
+  cod int primary key DEFAULT (NEXT VALUE FOR InstalacaoCod),
+  descricao varchar (150) not null,
+  empresa int references Empresa not null,
+  localizacao int references Localizacao not null
+)
+```
