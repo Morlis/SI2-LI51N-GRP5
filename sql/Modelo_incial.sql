@@ -18,6 +18,7 @@ if(OBJECT_ID('FuncionarioCod') is not null) DROP SEQUENCE FuncionarioCod;
 if(OBJECT_ID('AreaIntervencao') is not null) drop table AreaIntervencao
 if(OBJECT_ID('Sector') is not null) drop table Sector
 if(OBJECT_ID('Instalacao') is not null) drop table Instalacao
+if(OBJECT_ID('InstalacaoCod') is not null) DROP SEQUENCE InstalacaoCod;
 if(OBJECT_ID('Localizacao') is not null) drop table Localizacao
 if(OBJECT_ID('Empresa') is not null) drop table Empresa
 
@@ -34,11 +35,13 @@ morada varchar(250) unique not null,
 coordenadas varchar(15) not null
 )
 
+CREATE SEQUENCE dbo.InstalacaoCod AS int START WITH 1 INCREMENT BY 1
+
 create table Instalacao(
-cod int primary key,
-descricao varchar (150) not null,
-empresa int references Empresa not null,
-localizacao int references Localizacao not null
+  cod int primary key DEFAULT (NEXT VALUE FOR InstalacaoCod),
+  descricao varchar (150) not null,
+  empresa int references Empresa not null,
+  localizacao int references Localizacao not null
 )
 
 create table Sector(
