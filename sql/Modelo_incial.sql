@@ -57,7 +57,7 @@ descricao varchar(250)
 )
 
 create table Funcionario(
-num int primary key, --nota: deverá ser sequencial
+num int primary key, -- Sequencia FuncionarioCod
 nome varchar(250) not null,
 dataNasc date not null
 )
