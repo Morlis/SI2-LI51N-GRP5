@@ -13,8 +13,8 @@ use SI2_1314v_TP
 if(OBJECT_ID('Trabalho') is not null) drop table Trabalho
 if(OBJECT_ID('Ocorrencia') is not null) drop table Ocorrencia
 if(OBJECT_ID('Afecto') is not null) drop table Afecto
-if(OBJECT_ID('FuncionarioCod') is not null) DROP SEQUENCE FuncionarioCod;
 if(OBJECT_ID('Funcionario') is not null) drop table Funcionario
+if(OBJECT_ID('FuncionarioCod') is not null) DROP SEQUENCE FuncionarioCod;
 if(OBJECT_ID('AreaIntervencao') is not null) drop table AreaIntervencao
 if(OBJECT_ID('Sector') is not null) drop table Sector
 if(OBJECT_ID('Instalacao') is not null) drop table Instalacao
