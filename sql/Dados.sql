@@ -41,3 +41,31 @@ insert into AreaIntervencao (designacao)
 	select 'Assistência de Elevadores' union all
 	select 'Manutenção AVAC'
 
+insert into Funcionario (nome, dataNasc)
+	select 'Alves Redol', '1974-4-1' union all
+	select 'Alves dos Reis', '1978-4-1' union all
+	select 'Helder Conduto', '1979-4-1' union all
+	select 'Jorge Prestrelo', '1978-4-1' union all
+	select 'João Antunes', '1982-4-1' union all
+	select 'Celso Conceição', '1980-4-1' union all
+	select 'Rui António', '1981-4-1' union all
+	select 'Marco Abrantes', '1981-4-1' union all
+	select 'Toni Machado', '1983-4-1'
+
+insert into Afecto
+	select 1, 1, '1994', 1 union all
+	select 2, 2, '1998', 1 union all
+	select 3, 3, '1999', 1 union all
+	select 4, 4, '1998', 1 union all
+	select 1, 5, '2002', 0 union all
+	select 2, 6, '2000', 0 union all
+	select 3, 7, '2000', 0 union all
+	select 4, 8, '2001', 0 union all
+	select 4, 9, '2002', 0
+
+
+
+insert into Ocorrencia (dhEntrada, dhAlteracao, tipo, codInst, piso, zona, empresa)
+	select '2014-1-1 12:00:00', '2014-1-1 12:00:00', 'urgente', 1, 1, 'A', 501510184 union all
+	select '2014-2-1 13:00:00', '2014-2-1 13:00:00', 'crítico', 2, -1, 'A', 502488603 union all
+	select '2014-3-1 14:00:00', '2014-3-1 14:00:00', 'trivial', 3, 0, 'C', 502855967
