@@ -25,7 +25,8 @@ insert into Instalacao (descricao, empresa, localizacao)
 	select 'Oficina 21', 502855967, 3 union all
 	select 'Salão Nobre', 508899141, 4 union all
 	select 'Anfitiatro Norte', 509061168, 5 union all
-	select 'Cantina', 600016234, 6
+	select 'Cantina', 600016234, 6 union all
+	select 'Edifício F', 600016234, 6
 
 insert into Sector
 	select 1, 1, 'A', '250 m^2', 1 union all
@@ -33,7 +34,11 @@ insert into Sector
 	select 3, 0, 'C', '800 m^2', 1 union all
 	select 4, 3, 'D', '1500 m^2', 1 union all
 	select 5, -2, 'B', '50 m^2', 0 union all
-	select 6, 1, 'E', '300 m^2', 0
+	select 6, 1, 'E', '300 m^2', 0 union all
+	select 7, 0, 'A', '30 m^2', 0 union all
+	select 7, 0, 'B', '30 m^2', 0 union all
+	select 7, 0, 'C', '30 m^2', 0 union all
+	select 7, -1, 'D', '40 m^2', 0
 
 insert into AreaIntervencao (designacao)
 	select 'Assistência Técnica' union all
@@ -63,9 +68,23 @@ insert into Afecto
 	select 4, 8, '2001', 0 union all
 	select 4, 9, '2002', 0
 
-
-
 insert into Ocorrencia (dhEntrada, dhAlteracao, tipo, codInst, piso, zona, empresa)
-	select '2014-1-1 12:00:00', '2014-1-1 12:00:00', 'urgente', 1, 1, 'A', 501510184 union all
+	select '2014-2-1 12:00:00', '2014-2-1 12:00:00', 'urgente', 1, 1, 'A', 501510184 union all
 	select '2014-2-1 13:00:00', '2014-2-1 13:00:00', 'crítico', 2, -1, 'A', 502488603 union all
-	select '2014-3-1 14:00:00', '2014-3-1 14:00:00', 'trivial', 3, 0, 'C', 502855967
+	select '2014-3-1 14:00:00', '2014-3-1 14:00:00', 'trivial', 3, 0, 'C', 502855967 union all
+	select '2014-4-1 14:00:00', '2014-4-1 14:00:00', 'crítico', 7, 0, 'A', 600016234 union all
+	select '2014-4-1 14:00:00', '2014-4-1 14:00:00', 'crítico', 7, 0, 'B', 600016234 union all
+	select '2014-4-1 14:00:00', '2014-4-1 14:00:00', 'crítico', 7, 0, 'C', 600016234
+
+
+insert into Ocorrencia (dhEntrada, dhAlteracao, tipo, estado, codInst, piso, zona, empresa)
+	select '2014-1-3 12:00:00', '2014-1-3 15:00:00', 'trivial', 'em processamento', 1, 1, 'A', 501510184 union all
+	select '2014-1-1 12:00:00', '2014-1-1 16:00:00', 'trivial', 'em resolução', 2, -1, 'A', 502488603 union all
+	select '2014-1-1 12:00:00', '2014-1-1 12:15:00', 'trivial', 'recusado', 3, 0, 'C', 502855967 union all
+	select '2014-1-1 12:00:00', '2014-1-1 12:20:00', 'trivial', 'cancelado', 4, 3, 'D', 508899141 union all
+	select '2014-1-1 12:00:00', '2014-1-2 14:00:00', 'trivial', 'concluído', 1, 1, 'A', 501510184
+
+insert into Trabalho
+	select 7, 1, 0, 1 union all
+	select 10, 2, 1, 2
+
