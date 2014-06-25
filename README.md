@@ -134,7 +134,7 @@ BEGIN
 END
 GO
 ```
-d. Cancelar uma ocorrência **NOTA: FALTA VALIDAR ESTA SOLUÇÃO**
+d. Cancelar uma ocorrência
 ```sql
 /**
 * Não necessita de uma transação.
@@ -166,6 +166,7 @@ BEGIN
 		GROUP BY oc.tipo, oc.empresa
 END
 ```
+
 h. Listar as ocorrências em situação de incumprimento face ao prazo estabelecido para a sua resolução. 
 ```sql
 /**
