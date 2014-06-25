@@ -81,8 +81,8 @@ primary key (areaInt,numFunc)
 
 create table Ocorrencia(
 id int identity(1,1) primary key,
-dhEntrada datetime not null,
-dhAlteracao datetime not null,
+dhEntrada datetime not null DEFAULT GETDATE(),
+dhAlteracao datetime not null DEFAULT GETDATE(),
 tipo char(7) not null CHECK (tipo IN ('urgente', 'crítico', 'trivial')), 
 estado varchar(16) not null CHECK (estado IN ('inicial', 'em processamento', 'em resolução', 'recusado', 'cancelado', 'concluído')) DEFAULT('inicial'), 
 codInst int not null,
