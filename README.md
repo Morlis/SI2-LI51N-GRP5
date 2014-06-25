@@ -9,7 +9,7 @@ Ordem de execução dos ficheiros
 * Extensoes.sql
 * Dados.sql
 
-##### Restrições de integridade adicionadas ao modelo inícial
+##### Questão 1 - Restrições de integridade adicionadas ao modelo inícial
 
 Valor inícial e conjunto de valores
 ```sql
@@ -78,3 +78,199 @@ BEGIN
 	SET @id = SCOPE_IDENTITY()
 END
 ```
+b. Actualizar os dados de uma empresa.
+```sql
+/**
+* Não necessita de uma transação.
+* Exemplo:
+* EXEC EditarEmpresa 600016234, 'Instituto Superior de Engenharia de Lisboa', 'Rua Conselheiro Emídio Navarro 1, 1959-007 Lisboa'
+**/
+CREATE PROCEDURE EditarEmpresa @nipc int, @designacao varchar(50), @morada varchar(255) AS
+BEGIN
+	UPDATE Empresa SET designacao=@designacao, morada=@morada WHERE nipc=@nipc
+END
+```
+c. Reportar uma ocorrência. 
+```sql
+/**
+* Gatilho para actualizar a data de alteracao de uma ocorrencia (dhAlteracao) automaticamente.
+**/
+CREATE TRIGGER Ocorrencia_alterada ON Ocorrencia
+FOR UPDATE /* Dispara este gatilho quando uma Ocorrencia e alterada */
+AS BEGIN
+	UPDATE Ocorrencia SET dhAlteracao = GETDATE()
+	FROM INSERTED
+	WHERE INSERTED.id=Ocorrencia.id
+END
+GO
+
+/**
+* Nivel de isolamento READ COMMITTED
+* Exemplo:
+* DECLARE @OcorID int
+* Exec ReportarOcorrencia 'trivial', 501510184, 1, 1, 'A', @OcorID OUT
+**/
+CREATE PROCEDURE ReportarOcorrencia @tipo char(7), @empresa int, @codInst int, @piso int, @zona char(1), @id int OUT AS
+BEGIN
+	SET XACT_ABORT ON
+	SET TRANSACTION ISOLATION LEVEL READ COMMITTED
+	BEGIN TRANSACTION
+	BEGIN TRY
+		SELECT Empresa.nipc from Instalacao 
+			INNER JOIN Empresa ON Empresa.nipc = Instalacao.empresa
+			INNER JOIN Sector ON Sector.codInst = Instalacao.cod
+			WHERE Empresa.nipc = @empresa AND Instalacao.cod=@codInst AND piso=@piso AND zona=@zona
+		IF @@ROWCOUNT > 0
+		BEGIN
+			INSERT INTO Ocorrencia (tipo, empresa, codInst, piso, zona) VALUES (@tipo, @empresa, @codInst, @piso, @zona)
+			SET @id = SCOPE_IDENTITY()
+		END
+		COMMIT
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK
+	END CATCH
+END
+GO
+```
+d. Cancelar uma ocorrência **NOTA: FALTA VALIDAR ESTA SOLUÇÃO**
+```sql
+/**
+* Não necessita de uma transação.
+* So cancela Ocorrencias em estado 'inicial' ou 'em processamento'
+* Exemplo:
+* Exec CancelarOcorrencia 3
+**/
+CREATE PROCEDURE CancelarOcorrencia @id int AS
+BEGIN
+	UPDATE Ocorrencia SET estado='cancelado' WHERE id=@id AND (estado='inicial' OR estado='em processamento')
+END
+```
+e. Dar início à resolução de uma ocorrência em processamento. 
+
+f. Assinalar a finalização da prestação de serviço numa área de intervenção de uma dada ocorrência. 
+
+g. Apresentar, para cada empresa, o número total de ocorrências organizadas por tipo. 
+```sql
+/**
+* Não necessita de uma transação.
+* Exemplo:
+* EXEC ListarTotalOcorrenciaDasEmpresas
+**/
+CREATE PROCEDURE ListarTotalOcorrenciaDasEmpresas AS
+BEGIN
+	SELECT oc.empresa, oc.tipo, COUNT(oc.tipo) AS nrOcorrTipo FROM Ocorrencia AS oc
+		INNER JOIN Empresa e
+			ON oc.empresa = e.nipc
+		GROUP BY oc.tipo, oc.empresa
+END
+```
+h. Listar as ocorrências em situação de incumprimento face ao prazo estabelecido para a sua resolução. 
+```sql
+/**
+* Não necessita de uma transação.
+* Exemplo:
+* EXEC ListarOcorrenciasEmIncumprimento
+**/
+CREATE PROCEDURE ListarOcorrenciasEmIncumprimento AS
+BEGIN
+	DECLARE @ocorrenciaTipo48h as varchar(7), @ocorrenciaTipo12h as varchar(7)
+	SET @ocorrenciaTipo48h = 'urgente'
+	SET @ocorrenciaTipo12h = 'crítico'
+
+	SELECT *,  (DATEDIFF(SECOND, oc.dhEntrada, oc.dhAlteracao) / 60 / 60) AS HOURS FROM Ocorrencia oc
+		WHERE (oc.tipo = 'urgente' AND (DATEDIFF(SECOND, oc.dhEntrada, oc.dhAlteracao) / 60 / 60) > 48) OR 
+			(oc.tipo = 'crítico' AND (DATEDIFF(SECOND, oc.dhEntrada, oc.dhAlteracao) / 60 / 60) > 12)
+END
+```
+
+i. Indicar, para uma determinada área de intervenção, qual a empresa com maior número de ocorrências do tipo 
+“crítico” que reportou ocorrências nessa área. 
+```sql
+/**
+* Não necessita de uma transação.
+* Exemplo:
+* EXEC ListarEmpresaMaiorNrOcorrenciasCriticasParaCertaAreaIntervencao 'Manutenção Extintores'
+**/
+CREATE PROCEDURE ListarEmpresaMaiorNrOcorrenciasCriticasParaCertaAreaIntervencao  @areaIntervencao varchar(50) AS
+BEGIN
+	DECLARE @ocorrenciaTipo as varchar(7)
+	SET @ocorrenciaTipo = 'crítico'
+	SELECT MAX(e.designacao) AS EmpresaMaiorNrOcorrencias FROM AreaIntervencao ai
+		INNER JOIN Trabalho AS t
+			ON t.areaInt = ai.cod
+		INNER JOIN Ocorrencia AS oc
+			ON oc.id = t.idOcorr AND oc.tipo = @ocorrenciaTipo AND ai.designacao = @areaIntervencao
+		INNER JOIN Empresa e
+			ON e.nipc = oc.empresa
+END
+```
+
+j. Listar os funcionários que nunca tenham tido a coordenação de uma ocorrência do tipo “crítico”. 
+```sql
+/**
+* Não necessita de uma transação.
+* Exemplo:
+* EXEC ListarFuncionariosCoordenadoresSemOcorrenciasCriticas
+**/
+CREATE PROCEDURE ListarFuncionariosCoordenadoresSemOcorrenciasCriticas AS
+BEGIN
+	DECLARE @ocorrenciaTipo as varchar(7)
+	SET @ocorrenciaTipo = 'crítico'
+
+	SELECT fu.nome FROM Funcionario fu 
+		LEFT JOIN
+		(SELECT f.num, f.nome, oc.tipo, COUNT(oc.tipo) AS NrOcorrencias FROM Ocorrencia oc 
+			INNER JOIN Trabalho t
+				ON t.idOcorr = oc.id AND oc.tipo = @ocorrenciaTipo
+			INNER JOIN Funcionario f
+				ON f.num = t.coordenador
+			GROUP BY f.num, f.nome, oc.tipo
+			HAVING COUNT(oc.tipo) > 0
+		) AS Oco
+			ON oco.num = fu.num 
+		WHERE oco.NrOcorrencias IS NULL
+END
+```
+
+k. Criar um processo que permita em determinado momento no tempo, para todas as ocorrências que estejam em 
+incumprimento, registar um ponto (de crédito) a cada empresa visada. Estes pontos serão um dia mais tarde 
+convertidos em cheques-bónus (fora do âmbito deste projecto). Para tal deve: 
+ i. Criar as tabelas auxiliares necessárias ao registo de pontos por empresa;
+
+
+ ii. Garantir que, uma empresa não recebe vários pontos pela mesma ocorrência, mesmo que o processo se execute várias vezes com a mesma ocorrência ainda em incumprimento; 
+
+
+ iii. Manter registo de todas as ocorrências que deram origem a pontos, e a sua data de processamento; 
+
+
+##### Questão 3 - Aplicação ADO.NET, Entity Framework:
+
+a. Actualizar os dados de uma empresa;
+
+b. Registar uma ocorrência; 
+
+c. Aceitação de uma ocorrência (i.e. atribuição do estado em processamento); 
+
+d. Determinar quais as ocorrências que se encontram em situação de incumprimento e quais os centros de 
+intervenção responsáveis pelo incumprimento; 
+
+e. Listar todas as ocorrências que tenham sido concluídas num determinado período de tempo; 
+
+f. Dar início, na sua área de intervenção específica, à resolução de uma ocorrência em processamento; 
+
+g. Assinalar a finalização da prestação de serviço numa área de intervenção de uma dada ocorrência; 
+
+h. Obter informação sobre o sector e morada da instalação de uma dada ocorrência
+
+
+##### Questão 4 - XML - Criação de de Schemas XSD para validação, habilitar a aplicação para o carregamento de dados a partir de ficheiros XML:
+
+a. Crie um schema xml (XSD) que permita validar a estrutura de um documento xml que contenha informação 
+sobre o registo de um conjunto de ocorrências, com o seu respectivo detalhe; 
+
+b. Apresente exemplos de documentos xml para carregamento; 
+
+c. Crie uma aplicação (ou integre na aplicação realizada na alínea anterior) a funcionalidade de carregar o ficheiro xml, inserindo a respectiva informação na base de dados; 
