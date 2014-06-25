@@ -14,12 +14,16 @@ Ordem de execução dos ficheiros
 Valor inícial e conjunto de valores
 ```sql
 ALTER TABLE [dbo].[Ocorrencia] ADD  DEFAULT ('inicial') FOR [estado]
+ALTER TABLE [dbo].[Ocorrencia] ADD DEFAULT GETDATE() FOR dhEntrada
+ALTER TABLE [dbo].[Ocorrencia] ADD DEFAULT GETDATE() FOR dhAlteracao
 ALTER TABLE [dbo].[Ocorrencia]
   WITH CHECK ADD CHECK
     (([estado]='concluído' OR [estado]='cancelado' OR [estado]='recusado' OR [estado]='em resolução' OR [estado]='em processamento' OR [estado]='inicial'))
 ALTER TABLE [dbo].[Ocorrencia]
   WITH CHECK ADD CHECK
     (([tipo]='trivial' OR [tipo]='crítico' OR [tipo]='urgente'))
+ALTER TABLE [dbo].[Ocorrencia] ADD DEFAULT GETDATE() FOR dhEntrada
+
 ```
 [Sequência](http://msdn.microsoft.com/en-us/library/ff878058.aspx) para o campo **num** da tabela Funcionario
 ```sql
