@@ -82,9 +82,17 @@ insert into Ocorrencia (dhEntrada, dhAlteracao, tipo, estado, codInst, piso, zon
 	select '2014-1-1 12:00:00', '2014-1-1 16:00:00', 'trivial', 'em resolução', 2, -1, 'A', 502488603 union all
 	select '2014-1-1 12:00:00', '2014-1-1 12:15:00', 'trivial', 'recusado', 3, 0, 'C', 502855967 union all
 	select '2014-1-1 12:00:00', '2014-1-1 12:20:00', 'trivial', 'cancelado', 4, 3, 'D', 508899141 union all
-	select '2014-1-1 12:00:00', '2014-1-2 14:00:00', 'trivial', 'concluído', 1, 1, 'A', 501510184
+	select '2014-1-1 12:00:00', '2014-1-2 14:00:00', 'trivial', 'concluído', 1, 1, 'A', 501510184 union all
+	select '2013-12-1 12:00:00', '2013-12-1 14:00:00', 'crítico', 'concluído', 1, 1, 'A', 501510184 union all
+	select '2013-12-3 12:00:00', '2013-12-3 14:00:00', 'crítico', 'concluído', 1, 1, 'A', 501510184 union all
+	select '2013-11-3 00:00:00', '2013-11-3 14:00:00', 'crítico', 'em processamento', 1, 1, 'A', 501510184 union all
+	select '2013-11-5 00:00:00', '2013-11-7 02:00:00', 'urgente', 'em processamento', 1, 1, 'A', 501510184 union all
+	select '2013-10-3 12:00:00', '2013-10-3 14:00:00', 'crítico', 'concluído', 1, 1, 'A', 501510184 union all
+	select '2013-10-1 12:00:00', '2013-10-1 16:00:00', 'crítico', 'concluído', 2, -1, 'A', 502488603
 
 insert into Trabalho
 	select 7, 1, 0, 1 union all
-	select 10, 2, 1, 2
-
+	select 10, 2, 1, 2 union all
+	select 12, 2, 1, 2 union all
+	select 16, 2, 1, 2 union all
+	select 17, 2, 1, 2
