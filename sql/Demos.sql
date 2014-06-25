@@ -19,7 +19,6 @@ EXEC EditarEmpresa 600016234, 'Instituto Superior de Engenharia de Lisboa', 'Rua
 * ALINEA 2.c
 ************************************************/
 /* Verificar disparo do gatilho (Ocorrencia_alterada) quando uma Ocorrencia e alterada */
-
 Exec ReportarOcorrencia 'trivial', 501510184, 1, 1, 'A', @OcorID OUT
 
 /************************************************
@@ -35,7 +34,7 @@ EXEC ListarOcorrenciasEmIncumprimento
 /************************************************
 * ALINEA 2.i
 ************************************************/
-EXEC ListarOcorrenciasEmIncumprimento 'Manutenção Extintores'
+EXEC ListarEmpresaMaiorNrOcorrenciasCriticasParaCertaAreaIntervencao 'Manutenção Extintores'
 
 /************************************************
 * ALINEA 2.j
