@@ -150,7 +150,7 @@ END
 e. Dar início à resolução de uma ocorrência em processamento. ***EM CURSO: CM***
 ```sql
 /**
-* Necessita transação.
+* Necessita transação (Read Committed? - Evitar actualizaçãoes aos criterios de eleição dos coordenadores de área).
 * O estado em resolução indica que foram atribuídos funcionários para coordenarem cada uma 
 * das áreas de intervenção associadas à ocorrência. Para cada área de intervenção da ocorrência, é atribuído um 
 * coordenador (a responsabilidade é atribuída automaticamente ao funcionário que tiver menos ocorrências em resolução).
