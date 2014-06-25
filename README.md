@@ -147,7 +147,19 @@ BEGIN
 	UPDATE Ocorrencia SET estado='cancelado' WHERE id=@id AND (estado='inicial' OR estado='em processamento')
 END
 ```
-e. Dar início à resolução de uma ocorrência em processamento. 
+e. Dar início à resolução de uma ocorrência em processamento. ***EM CURSO: CM***
+```sql
+/**
+* Necessita transação.
+* O estado em resolução indica que foram atribuídos funcionários para coordenarem cada uma 
+* das áreas de intervenção associadas à ocorrência. Para cada área de intervenção da ocorrência, é atribuído um 
+* coordenador (a responsabilidade é atribuída automaticamente ao funcionário que tiver menos ocorrências em resolução).
+* Parametros: Id da Ocorrencia;  
+* Exemplo:
+* Exec ResolverOcorrencia 3
+**/
+
+```
 
 f. Assinalar a finalização da prestação de serviço numa área de intervenção de uma dada ocorrência. 
 
