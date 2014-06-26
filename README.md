@@ -1,4 +1,4 @@
-SI2-LI51N-GRP5
+﻿SI2-LI51N-GRP5
 ==============
 
 Sistemas de Informação II - Trabalho Prático 3 - Grupo 5
@@ -192,9 +192,9 @@ BEGIN
 	SET @ocorrenciaTipo48h = 'urgente'
 	SET @ocorrenciaTipo12h = 'crítico'
 
-	SELECT *,  (DATEDIFF(SECOND, oc.dhEntrada, oc.dhAlteracao) / 60 / 60) AS HOURS FROM Ocorrencia oc
-		WHERE (oc.tipo = 'urgente' AND (DATEDIFF(SECOND, oc.dhEntrada, oc.dhAlteracao) / 60 / 60) > 48) OR 
-			(oc.tipo = 'crítico' AND (DATEDIFF(SECOND, oc.dhEntrada, oc.dhAlteracao) / 60 / 60) > 12)
+	SELECT *,  (DATEDIFF(HOUR, oc.dhEntrada, oc.dhAlteracao)) AS HOURa FROM Ocorrencia oc
+		WHERE (oc.tipo = @ocorrenciaTipo48h AND DATEDIFF(HOUR, oc.dhEntrada, oc.dhAlteracao) > 48) OR 
+			(oc.tipo = @ocorrenciaTipo12h AND DATEDIFF(HOUR, oc.dhEntrada, oc.dhAlteracao) > 12)
 END
 ```
 

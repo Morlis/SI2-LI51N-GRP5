@@ -8,6 +8,7 @@ Use SI2_1314v_TP;
 ************************************************/
 EXEC InserirEmpresa 600016234, 'Instituto Superior de Engenharia de Lisboa', 'Rua Conselheiro Emídio Navarro 1, 1959-007 Lisboa'
 
+DECLARE @AreaID int
 EXEC InserirAreaIntervencao @AreaID OUT, 'Assistência Técnica'
 
 /************************************************
@@ -19,7 +20,23 @@ EXEC EditarEmpresa 600016234, 'Instituto Superior de Engenharia de Lisboa', 'Rua
 * ALINEA 2.c
 ************************************************/
 /* Verificar disparo do gatilho (Ocorrencia_alterada) quando uma Ocorrencia e alterada */
-Exec ReportarOcorrencia 'trivial', 501510184, 1, 1, 'A', @OcorID OUT
+DECLARE @OcorID int
+EXEC ReportarOcorrencia 'trivial', 501510184, 1, 1, 'A', @OcorID OUT
+
+/************************************************
+* ALINEA 2.d
+************************************************/
+EXEC CancelarOcorrencia 3
+
+/************************************************
+* ALINEA 2.e
+************************************************/
+TODO (CM)
+
+/************************************************
+* ALINEA 2.f
+************************************************/
+TODO (CM)
 
 /************************************************
 * ALINEA 2.g
@@ -41,4 +58,6 @@ EXEC ListarEmpresaMaiorNrOcorrenciasCriticasParaCertaAreaIntervencao 'Manutenção
 ************************************************/
 EXEC ListarFuncionariosCoordenadoresSemOcorrenciasCriticas
 
-
+/************************************************
+* ALINEA 2.k
+************************************************/
