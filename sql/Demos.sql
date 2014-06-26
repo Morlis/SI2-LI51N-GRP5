@@ -54,6 +54,12 @@ EXEC ListarOcorrenciasEmIncumprimento
 EXEC ListarEmpresaMaiorNrOcorrenciasCriticasParaCertaAreaIntervencao 'Manutenção Extintores'
 
 /************************************************
+* ALINEA 2.i (Versão 2)
+* Contempla empates, isto é, empresa com o mesmo número de ocorrências (máximas)
+************************************************/
+EXEC ListarEmpresaMaiorNrOcorrenciasCriticasParaCertaAreaIntervencaoV2 'Manutenção Extintores'
+
+/************************************************
 * ALINEA 2.j
 ************************************************/
 EXEC ListarFuncionariosCoordenadoresSemOcorrenciasCriticas

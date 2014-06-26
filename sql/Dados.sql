@@ -88,11 +88,19 @@ insert into Ocorrencia (dhEntrada, dhAlteracao, tipo, estado, codInst, piso, zon
 	select '2013-11-3 00:00:00', '2013-11-3 14:00:00', 'crítico', 'em processamento', 1, 1, 'A', 501510184 union all
 	select '2013-11-5 00:00:00', '2013-11-7 02:00:00', 'urgente', 'em processamento', 1, 1, 'A', 501510184 union all
 	select '2013-10-3 12:00:00', '2013-10-3 14:00:00', 'crítico', 'concluído', 1, 1, 'A', 501510184 union all
-	select '2013-10-1 12:00:00', '2013-10-1 16:00:00', 'crítico', 'concluído', 2, -1, 'A', 502488603
+	select '2013-10-1 12:00:00', '2013-10-1 16:00:00', 'crítico', 'concluído', 2, -1, 'A', 502488603 union all
+	
+	select '2013-10-1 12:00:00', '2013-10-1 16:20:00', 'crítico', 'concluído', 4, 3, 'D', 508899141 union all
+	select '2013-10-3 12:00:00', '2013-10-3 16:20:00', 'crítico', 'concluído', 4, 3, 'D', 508899141
+	
+
+	--select o.*, e.designacao from Ocorrencia o inner join Empresa e on e.nipc = o.empresa
 
 insert into Trabalho
 	select 7, 1, 0, 1 union all
 	select 10, 2, 1, 2 union all
 	select 12, 2, 1, 2 union all
 	select 16, 2, 1, 2 union all
-	select 17, 2, 1, 2
+	select 17, 2, 1, 2 union all
+	select 18, 2, 1, 2 union all
+	select 19S, 2, 1, 2

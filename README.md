@@ -220,6 +220,37 @@ BEGIN
 END
 ```
 
+i. Versão 2 (Contempla empates, isto é, empresa com o mesmo número de ocorrências (máximas))
+```sql
+/**
+* Não necessita de uma transação.
+* Exemplo:
+* EXEC ListarEmpresaMaiorNrOcorrenciasCriticasParaCertaAreaIntervencao 'Manutenção Extintores'
+**/
+CREATE PROCEDURE ListarEmpresaMaiorNrOcorrenciasCriticasParaCertaAreaIntervencaoV2 @areaIntervencao VARCHAR(50) AS
+BEGIN
+	DECLARE @ocorrenciaTipo AS VARCHAR(7)
+	SET @ocorrenciaTipo = 'crítico'
+
+	SELECT e.designacao
+		FROM (SELECT COUNT(idOcorr) AS countOC, oc.empresa AS Empresa
+			FROM Trabalho T 
+				INNER JOIN Ocorrencia OC ON oc.id=T.idOcorr AND oc.tipo = @ocorrenciaTipo 
+				INNER JOIN AreaIntervencao ai ON ai.cod = T.areaInt AND ai.designacao = @areaIntervencao
+			GROUP BY oc.empresa) AS myCount
+				INNER JOIN Empresa e ON e.nipc = myCount.Empresa
+					GROUP BY myCount.countOC, e.designacao 
+					HAVING countOC = (SELECT MAX(MC.count1) 
+										FROM (SELECT COUNT(idOcorr) count1, oc.empresa
+												FROM Trabalho T 
+													INNER JOIN Ocorrencia OC ON oc.id=T.idOcorr AND oc.tipo = 'crítico' 
+													INNER JOIN AreaIntervencao ai ON ai.cod=T.areaInt AND ai.designacao = @areaIntervencao
+												GROUP BY oc.empresa
+												) AS MC
+										)
+END
+```
+
 j. Listar os funcionários que nunca tenham tido a coordenação de uma ocorrência do tipo “crítico”. 
 ```sql
 /**
