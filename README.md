@@ -161,7 +161,7 @@ e. Dar início à resolução de uma ocorrência em processamento. ***EM CURSO: 
 
 ```
 
-f. Assinalar a finalização da prestação de serviço numa área de intervenção de uma dada ocorrência. ***testar***
+f. Assinalar a finalização da prestação de serviço numa área de intervenção de uma dada ocorrência. ***CM: testar***
 ```sql
 /************************************************
 * ALINEA 2.f
