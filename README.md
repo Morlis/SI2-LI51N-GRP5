@@ -225,7 +225,7 @@ i. Versão 2 (Contempla empates, isto é, empresa com o mesmo número de ocorrê
 /**
 * Não necessita de uma transação.
 * Exemplo:
-* EXEC ListarEmpresaMaiorNrOcorrenciasCriticasParaCertaAreaIntervencao 'Manutenção Extintores'
+* EXEC ListarEmpresaMaiorNrOcorrenciasCriticasParaCertaAreaIntervencaoV2 'Manutenção Extintores'
 **/
 CREATE PROCEDURE ListarEmpresaMaiorNrOcorrenciasCriticasParaCertaAreaIntervencaoV2 @areaIntervencao VARCHAR(50) AS
 BEGIN
