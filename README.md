@@ -161,7 +161,37 @@ e. Dar início à resolução de uma ocorrência em processamento. ***EM CURSO: 
 
 ```
 
-f. Assinalar a finalização da prestação de serviço numa área de intervenção de uma dada ocorrência. 
+f. Assinalar a finalização da prestação de serviço numa área de intervenção de uma dada ocorrência. ***CM: testar***
+```sql
+/************************************************
+* ALINEA 2.f
+************************************************/
+/**
+* Necessita transação (discuss)
+* O estado de uma ocorrência transita para concluído logo que estejam terminados os trabalhos em todas as áreas de intervenção.
+* Pretendemos assinalar a conclusão de prestação de serviço para uma área de intervenção, o que significa criar um trigger para 
+* alterações ao campo "concluido" da  tabela "Trabalho". A acção despoletada passa por verificar se TODOS os registos da tabela 
+* Trabalho que estão relacionados com a presente ocorrencia se encontram no estado "concluido", e se for esse o caso, actualiza a 
+* tabela "Ocorrencia", alterando o estado para "concluido".
+**/
+CREATE FUNCTION	numTrabalhosEmCursoPorOcorrencia(@idOcorr int) RETURNS int
+AS
+BEGIN
+	RETURN (SELECT COUNT(*) FROM Trabalho WHERE idOcorr = @idOcorr AND concluido = 0)
+END
+
+CREATE TRIGGER conclusãoTrabalhoAreaIntervencao ON Trabalho AFTER UPDATE
+AS
+BEGIN
+	DECLARE @idOcorr int, @numTrabalhosEmCurso int, @concluido bit
+	SET @idOcorr = SELECT(idOcorr from inserted)
+	SET @numTrabalhosEmCurso = numTrabalhosEmCursoPorOcorrencia(@idOcorr)
+	IF (UPDATE(concluido) AND @numTrabalhosEmCurso == 0) 
+	BEGIN
+		UPDATE Ocorrencia SET estado = 'concluido' WHERE id = @idOcorr
+	END
+END
+```
 
 g. Apresentar, para cada empresa, o número total de ocorrências organizadas por tipo. 
 ```sql
