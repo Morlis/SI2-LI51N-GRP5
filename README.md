@@ -77,7 +77,9 @@ BEGIN
 	INSERT INTO AreaIntervencao VALUES(@designacao, @descricao)
 	SET @id = SCOPE_IDENTITY()
 END
+GO
 ```
+
 b. Actualizar os dados de uma empresa.
 ```sql
 /**
@@ -89,7 +91,9 @@ CREATE PROCEDURE EditarEmpresa @nipc int, @designacao varchar(50), @morada varch
 BEGIN
 	UPDATE Empresa SET designacao=@designacao, morada=@morada WHERE nipc=@nipc
 END
+GO
 ```
+
 c. Reportar uma ocorrência. 
 ```sql
 /**
@@ -105,7 +109,7 @@ END
 GO
 
 /**
-* Nivel de isolamento READ COMMITTED
+* Nivel de isolamento REPEATABLE READ
 * Exemplo:
 * DECLARE @OcorID int
 * Exec ReportarOcorrencia 'trivial', 501510184, 1, 1, 'A', @OcorID OUT
@@ -113,9 +117,10 @@ GO
 CREATE PROCEDURE ReportarOcorrencia @tipo char(7), @empresa int, @codInst int, @piso int, @zona char(1), @id int OUT AS
 BEGIN
 	SET XACT_ABORT ON
-	SET TRANSACTION ISOLATION LEVEL READ COMMITTED
+	SET TRANSACTION ISOLATION LEVEL REPEATABLE READ
 	BEGIN TRANSACTION
 	BEGIN TRY
+		/* RI: empresa tem que corresponder à empresa da instalacao da ocorrencia */
 		SELECT Empresa.nipc from Instalacao 
 			INNER JOIN Empresa ON Empresa.nipc = Instalacao.empresa
 			INNER JOIN Sector ON Sector.codInst = Instalacao.cod
@@ -134,38 +139,80 @@ BEGIN
 END
 GO
 ```
+
 d. Cancelar uma ocorrência
 ```sql
 /**
 * Não necessita de uma transação.
-* So cancela Ocorrencias em estado 'inicial' ou 'em processamento'
+* So cancela Ocourrencias em estado 'inicial' ou 'em processamento'
 * Exemplo:
-* Exec CancelarOcorrencia 3
+* EXEC CancelarOcorrencia 3
 **/
 CREATE PROCEDURE CancelarOcorrencia @id int AS
 BEGIN
 	UPDATE Ocorrencia SET estado='cancelado' WHERE id=@id AND (estado='inicial' OR estado='em processamento')
 END
+GO
 ```
 e. Dar início à resolução de uma ocorrência em processamento. ***EM CURSO: CM***
 ```sql
-/**
-* Necessita transação (Read Committed? - Evitar actualizaçãoes aos criterios de eleição dos coordenadores de área).
-* O estado em resolução indica que foram atribuídos funcionários para coordenarem cada uma 
-* das áreas de intervenção associadas à ocorrência. Para cada área de intervenção da ocorrência, é atribuído um 
-* coordenador (a responsabilidade é atribuída automaticamente ao funcionário que tiver menos ocorrências em resolução).
-* Parametros: Id da Ocorrencia;  
-* Exemplo:
-* Exec ResolverOcorrencia 3
+/** 
+* Função para obter o funcionário que tiver menos ocorrências em resolução
+* e que seja cordenador de uma area de intervencao
 **/
+CREATE FUNCTION dbo.FuncionarioComMenosOcorrenciasActivas(@areaID INT) RETURNS INT AS
+BEGIN
+	DECLARE @num INT
 
+	SELECT TOP(1) @num=num FROM Funcionario 
+		INNER JOIN Afecto ON Afecto.numFunc=Funcionario.num AND Afecto.éCoordenador=1 AND Afecto.areaInt=@areaID
+		INNER JOIN AreaIntervencao ON AreaIntervencao.cod=Afecto.numFunc
+		LEFT OUTER JOIN (
+			SELECT coordenador, COUNT(coordenador) as cnt FROM Trabalho 
+				INNER JOIN 
+					(SELECT id FROM Ocorrencia WHERE estado='em resolução') AS Ocorr ON Trabalho.idOcorr=Ocorr.id
+			GROUP BY coordenador) as Afc ON Afc.coordenador=Funcionario.num
+	ORDER BY Afc.cnt ASC
+	RETURN @num
+END
+GO
+
+/**
+* Nivel de isolamento REPEATABLE READ
+* Exemplo:
+* EXEC AssignarOcorrencia 3
+**/
+CREATE PROCEDURE AssignarOcorrencia @id int AS
+BEGIN
+	SET XACT_ABORT ON
+	SET TRANSACTION ISOLATION LEVEL REPEATABLE READ
+	BEGIN TRANSACTION
+	BEGIN TRY
+		DECLARE @emProcessamento int
+		DECLARE @funcionario int
+
+		-- Verificar se a Ocorrencia esta no estado 'em processamento' e obter o lock para a ocorrencia
+		SELECT @emProcessamento=count(*) FROM Ocorrencia WHERE id=@id AND estado='em processamento'
+		IF @emProcessamento > 0 
+		BEGIN
+			BEGIN
+				-- Assignar um coordenador a todos os trabalhos desta Ocorrencia
+				UPDATE Trabalho SET coordenador=dbo.FuncionarioComMenosOcorrenciasActivas(areaInt) WHERE Trabalho.idOcorr=@id
+				UPDATE Ocorrencia SET estado='em resolução' WHERE id=@id
+			END
+		END
+		COMMIT
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK
+	END CATCH
+END
+GO
 ```
 
 f. Assinalar a finalização da prestação de serviço numa área de intervenção de uma dada ocorrência. ***CM: testar***
 ```sql
-/************************************************
-* ALINEA 2.f
-************************************************/
 /**
 * Necessita transação (discuss)
 * O estado de uma ocorrência transita para concluído logo que estejam terminados os trabalhos em todas as áreas de intervenção.
@@ -179,106 +226,82 @@ AS
 BEGIN
 	RETURN (SELECT COUNT(*) FROM Trabalho WHERE idOcorr = @idOcorr AND concluido = 0)
 END
+GO 
 
 CREATE TRIGGER conclusãoTrabalhoAreaIntervencao ON Trabalho AFTER UPDATE
 AS
 BEGIN
-	DECLARE @idOcorr int, @numTrabalhosEmCurso int, @concluido bit
-	SET @idOcorr = SELECT(idOcorr from inserted)
-	SET @numTrabalhosEmCurso = numTrabalhosEmCursoPorOcorrencia(@idOcorr)
-	IF (UPDATE(concluido) AND @numTrabalhosEmCurso == 0) 
-	BEGIN
-		UPDATE Ocorrencia SET estado = 'concluido' WHERE id = @idOcorr
-	END
+	SET XACT_ABORT ON
+	SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
+	BEGIN TRANSACTION
+	BEGIN TRY
+		DECLARE @idOcorr int, @numTrabalhosEmCurso int, @concluido bit
+		SET @idOcorr = (SELECT idOcorr from inserted)
+		SET @numTrabalhosEmCurso = dbo.numTrabalhosEmCursoPorOcorrencia(@idOcorr)
+		IF (UPDATE(concluido) AND @numTrabalhosEmCurso = 0) 
+			UPDATE Ocorrencia SET estado = 'concluído' WHERE id = @idOcorr
+		COMMIT
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK
+	END CATCH
 END
+GO
 ```
 
 g. Apresentar, para cada empresa, o número total de ocorrências organizadas por tipo. 
 ```sql
 /**
-* Não necessita de uma transação.
 * Exemplo:
-* EXEC ListarTotalOcorrenciaDasEmpresas
+* SELECT * FROM TotalOcorrenciaPorEmpresaPorTipo WHERE nrOcorrTipo > 2
 **/
-CREATE PROCEDURE ListarTotalOcorrenciaDasEmpresas AS
-BEGIN
+CREATE VIEW TotalOcorrenciaPorEmpresaPorTipo AS
 	SELECT oc.empresa, oc.tipo, COUNT(oc.tipo) AS nrOcorrTipo FROM Ocorrencia AS oc
 		INNER JOIN Empresa e
 			ON oc.empresa = e.nipc
 		GROUP BY oc.tipo, oc.empresa
-END
+GO
 ```
 
 h. Listar as ocorrências em situação de incumprimento face ao prazo estabelecido para a sua resolução. 
 ```sql
 /**
-* Não necessita de uma transação.
 * Exemplo:
-* EXEC ListarOcorrenciasEmIncumprimento
+* SELECT * FROM OcorrenciasEmIncumprimento
 **/
-CREATE PROCEDURE ListarOcorrenciasEmIncumprimento AS
-BEGIN
-	DECLARE @ocorrenciaTipo48h as varchar(7), @ocorrenciaTipo12h as varchar(7)
-	SET @ocorrenciaTipo48h = 'urgente'
-	SET @ocorrenciaTipo12h = 'crítico'
-
+CREATE VIEW OcorrenciasEmIncumprimento AS
 	SELECT *,  (DATEDIFF(HOUR, oc.dhEntrada, oc.dhAlteracao)) AS HOURa FROM Ocorrencia oc
-		WHERE (oc.tipo = @ocorrenciaTipo48h AND DATEDIFF(HOUR, oc.dhEntrada, oc.dhAlteracao) > 48) OR 
-			(oc.tipo = @ocorrenciaTipo12h AND DATEDIFF(HOUR, oc.dhEntrada, oc.dhAlteracao) > 12)
-END
+		WHERE ((oc.tipo = 'urgente' AND DATEDIFF(HOUR, oc.dhEntrada, oc.dhAlteracao) > 48) OR 
+			(oc.tipo = 'crítico' AND DATEDIFF(HOUR, oc.dhEntrada, oc.dhAlteracao) > 12)) AND
+			(oc.estado NOT IN ('recusado', 'cancelado', 'concluído'))
+GO
 ```
 
 i. Indicar, para uma determinada área de intervenção, qual a empresa com maior número de ocorrências do tipo 
 “crítico” que reportou ocorrências nessa área. 
 ```sql
 /**
-* Não necessita de uma transação.
 * Exemplo:
-* EXEC ListarEmpresaMaiorNrOcorrenciasCriticasParaCertaAreaIntervencao 'Manutenção Extintores'
+* SELECT * FROM ObterEmpresaComMaxCritoOcorrPorAreaInt(2)
 **/
-CREATE PROCEDURE ListarEmpresaMaiorNrOcorrenciasCriticasParaCertaAreaIntervencao  @areaIntervencao varchar(50) AS
+CREATE FUNCTION dbo.ObterEmpresaComMaxCritoOcorrPorAreaInt(@areaInt int)
+RETURNS @maxTable TABLE
+(
+    empresa int PRIMARY KEY NOT NULL, 
+	Ocurrencias int
+) AS
 BEGIN
-	DECLARE @ocorrenciaTipo as varchar(7)
-	SET @ocorrenciaTipo = 'crítico'
-	SELECT MAX(e.designacao) AS EmpresaMaiorNrOcorrencias FROM AreaIntervencao ai
-		INNER JOIN Trabalho AS t
-			ON t.areaInt = ai.cod
-		INNER JOIN Ocorrencia AS oc
-			ON oc.id = t.idOcorr AND oc.tipo = @ocorrenciaTipo AND ai.designacao = @areaIntervencao
-		INNER JOIN Empresa e
-			ON e.nipc = oc.empresa
+	INSERT INTO @maxTable 
+		SELECT empresa, COUNT(empresa) as cnt FROM Trabalho INNER JOIN Ocorrencia ON Ocorrencia.id = Trabalho.idOcorr AND Ocorrencia.tipo='crítico'
+				WHERE Trabalho.areaInt=@areaInt GROUP BY empresa 		
+		HAVING COUNT(empresa) = 
+			(SELECT TOP(1) MAX(cnt) as maxCnt FROM 
+				(SELECT empresa, COUNT(empresa) as cnt FROM Trabalho INNER JOIN Ocorrencia ON Ocorrencia.id = Trabalho.idOcorr AND Ocorrencia.tipo='crítico'
+					WHERE Trabalho.areaInt=@areaInt GROUP BY empresa) as x2 GROUP BY empresa)
+	RETURN
 END
-```
-
-i. Versão 2 (Contempla empates, isto é, empresa com o mesmo número de ocorrências (máximas))
-```sql
-/**
-* Não necessita de uma transação.
-* Exemplo:
-* EXEC ListarEmpresaMaiorNrOcorrenciasCriticasParaCertaAreaIntervencaoV2 'Manutenção Extintores'
-**/
-CREATE PROCEDURE ListarEmpresaMaiorNrOcorrenciasCriticasParaCertaAreaIntervencaoV2 @areaIntervencao VARCHAR(50) AS
-BEGIN
-	DECLARE @ocorrenciaTipo AS VARCHAR(7)
-	SET @ocorrenciaTipo = 'crítico'
-
-	SELECT e.designacao
-		FROM (SELECT COUNT(idOcorr) AS countOC, oc.empresa AS Empresa
-			FROM Trabalho T 
-				INNER JOIN Ocorrencia OC ON oc.id=T.idOcorr AND oc.tipo = @ocorrenciaTipo 
-				INNER JOIN AreaIntervencao ai ON ai.cod = T.areaInt AND ai.designacao = @areaIntervencao
-			GROUP BY oc.empresa) AS myCount
-				INNER JOIN Empresa e ON e.nipc = myCount.Empresa
-					GROUP BY myCount.countOC, e.designacao 
-					HAVING countOC = (SELECT MAX(MC.count1) 
-										FROM (SELECT COUNT(idOcorr) count1, oc.empresa
-												FROM Trabalho T 
-													INNER JOIN Ocorrencia OC ON oc.id=T.idOcorr AND oc.tipo = 'crítico' 
-													INNER JOIN AreaIntervencao ai ON ai.cod=T.areaInt AND ai.designacao = @areaIntervencao
-												GROUP BY oc.empresa
-												) AS MC
-										)
-END
+GO
 ```
 
 j. Listar os funcionários que nunca tenham tido a coordenação de uma ocorrência do tipo “crítico”. 
@@ -306,6 +329,7 @@ BEGIN
 			ON oco.num = fu.num 
 		WHERE oco.NrOcorrencias IS NULL
 END
+GO
 ```
 
 k. Criar um processo que permita em determinado momento no tempo, para todas as ocorrências que estejam em 
