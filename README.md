@@ -342,7 +342,39 @@ convertidos em cheques-bónus (fora do âmbito deste projecto). Para tal deve:
 
 
  iii. Manter registo de todas as ocorrências que deram origem a pontos, e a sua data de processamento; 
+```sql
+/**
+* Transação: A discutir
+* Usa a View criada na alinea 2.h (ocorrenciasEmIncumprimento)
+* Estratégia: Se não exisitr, criar tabela de registos de Ocorrencias em Incumprimento, e inserir registos conforme o estado das ocorrencias, 
+* desde que não exista duplicação
+* O procedimento processarPontosPorIncumprimento realiza o processo indicado na linha acima.
+* A Função obterPontosPorEmpresa permite obter o numero de pontos por empresa.
+* Exemplo:
+* EXEC processarPontosPorIncumprimento
+**/
 
+CREATE PROCEDURE processarPontosPorIncumprimento AS 
+BEGIN
+	IF(OBJECT_ID('registoIncumprimento') is null) 
+		CREATE TABLE registoIncumprimento(
+		idOcorr int references Ocorrencia,
+		dhProcessamento datetime not null DEFAULT GETDATE()
+		)
+	INSERT INTO registoIncumprimento(idOcorr)
+		SELECT id FROM OcorrenciasEmIncumprimento WHERE id NOT IN (SELECT idOcorr FROM registoIncumprimento)
+END
+GO
+
+CREATE FUNCTION dbo.obterPontosPorEmpresa(@empresa INT) RETURNS int AS
+BEGIN
+	RETURN (SELECT COUNT(*) 
+		FROM registoIncumprimento INNER JOIN Ocorrencia
+		ON registoIncumprimento.idOcorr = Ocorrencia.id
+		WHERE Ocorrencia.empresa = @empresa)
+END
+GO
+```
 
 ##### Questão 3 - Aplicação ADO.NET, Entity Framework:
 
