@@ -1,1 +1,53 @@
-<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"><xs:element name="root"><xs:complexType><xs:sequence><xs:element name="Ocorrencia" maxOccurs="unbounded" minOccurs="0"><xs:complexType><xs:sequence><xs:element type="xs:byte" name="id"/><xs:element type="xs:dateTime" name="dhEntrada"/><xs:element type="xs:dateTime" name="dhAlteracao"/><xs:element type="xs:string" name="tipo"/><xs:element type="xs:string" name="estado"/><xs:element type="xs:byte" name="codInst"/><xs:element type="xs:byte" name="piso"/><xs:element type="xs:string" name="zona"/><xs:element type="xs:int" name="empresa"/><xs:element name="Trabalho"><xs:complexType mixed="true"><xs:sequence><xs:element type="xs:byte" name="idOcorr" minOccurs="0"/><xs:element type="xs:byte" name="areaInt" minOccurs="0"/><xs:element type="xs:byte" name="concluido" minOccurs="0"/><xs:element type="xs:byte" name="coordenador" minOccurs="0"/></xs:sequence></xs:complexType></xs:element></xs:sequence></xs:complexType></xs:element></xs:sequence></xs:complexType></xs:element></xs:schema>
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="Ocorrencias">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Ocorrencia" maxOccurs="unbounded" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="id" type="xs:integer"/>
+							<xs:element name="dhEntrada" type="xs:dateTime"/>
+							<xs:element name="dhAlteracao" type="xs:dateTime"/>
+							<xs:element name="tipo">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="urgente"/>
+										<xs:enumeration value="cr&#237;tico"/>
+										<xs:enumeration value="trivial"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="estado">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="inicial"/>
+										<xs:enumeration value="em processamento"/>
+										<xs:enumeration value="em resolu&#231;&#227;o"/>
+										<xs:enumeration value="recusado"/>
+										<xs:enumeration value="cancelado"/>
+										<xs:enumeration value="conclu&#237;do"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="codInst" type="xs:integer"/>
+							<xs:element name="piso" type="xs:integer"/>
+							<xs:element name="zona" type="xs:string"/>
+							<xs:element name="empresa" type="xs:integer"/>
+							<xs:element name="Trabalho" maxOccurs="unbounded" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="idOcorr" type="xs:integer" minOccurs="0"/>
+										<xs:element name="areaInt" type="xs:integer" minOccurs="0"/>
+										<xs:element name="concluido" type="xs:boolean" minOccurs="0"/>
+										<xs:element name="coordenador" type="xs:integer" minOccurs="0"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
