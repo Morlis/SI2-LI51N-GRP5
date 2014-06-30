@@ -1,0 +1,1 @@
+C:\Users\Andre\Documents\ISEL\SI2\TrabalhoFinal\codigoGit\SI2-LI51N-GRP5\ado_net\helpers\ex3_EF_app\MyDatabaseFirst\MyDatabaseFirst\bin\Debug\MyDatabaseFirst.exe.config

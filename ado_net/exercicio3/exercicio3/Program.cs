@@ -25,6 +25,12 @@ namespace exercicio3
             //Testar alinea c)
      //       c(21);
 
+
+            //Testar alinea d)    
+            
+     //       b(new DateTime(2014,03,25,10,20,30,00) , DateTime.Today, TipoOcorrencia.crítico, 1, 1, "A", 501510184);
+     //       b(DateTime.Now, DateTime.Now, TipoOcorrencia.crítico, 1, 1, "A", 501510184);  
+            d();
         }
 
 
@@ -116,5 +122,54 @@ namespace exercicio3
  
         }
 
+
+        /************************************************
+          * ALINEA 3.d - Determinar quais as ocorrências que se encontram em situação de incumprimento 
+         * e quais os centros de intervenção responsáveis pelo incumprimento
+          ************************************************/
+        /**
+         * Percorrer todas as ocorrencias e verificar, entre as que não estejam cancelas concluídas ou recusadas,
+         * o número de horas decorridas após a entrada. 
+         **/
+        static void d() 
+        {
+            using (SI2_1314v_TPEntities ctx = new SI2_1314v_TPEntities()) {
+
+                foreach (var o in ctx.Ocorrencias) {
+                    if (o.tipo.Equals(TipoOcorrencia.crítico.ToString())
+                        &&
+                          (
+                            (!o.estado.Equals(EstadoOcorrencia.cancelado.ToString())) &&
+                            (!o.estado.Equals(EstadoOcorrencia.concluído.ToString())) &&
+                            (!o.estado.Equals(EstadoOcorrencia.recusado.ToString()))
+                          )
+                        &&
+                          ( o.dhEntrada.AddHours(12) < DateTime.Now)
+                      )
+                    {
+                        Console.WriteLine("A Ocorrencia de tipo crítico {0} encontra-se em incumprimento", o.id);
+                        Console.WriteLine("Centro de intervenção responsável: {0}", ctx.Empresas.First(e => e.nipc == o.empresa).designacao);
+                    }else
+                        if (o.tipo.Equals(TipoOcorrencia.urgente.ToString())
+                        &&
+                          (
+                            (!o.estado.Equals(EstadoOcorrencia.cancelado.ToString())) &&
+                            (!o.estado.Equals(EstadoOcorrencia.concluído.ToString())) &&
+                            (!o.estado.Equals(EstadoOcorrencia.recusado.ToString()))
+                          )
+                        &&
+                          (o.dhEntrada.AddHours(48) < DateTime.Now)
+                      )
+                        {
+                            Console.WriteLine("A Ocorrencia de tipo urgente {0} encontra-se em incumprimento", o.id);
+                            Console.WriteLine("Centro de intervenção responsável: {0}", ctx.Empresas.First(e => e.nipc == o.empresa).designacao);
+                        }
+                
+                }
+                Console.ReadKey();
+            
+            }
+ 
+        }
     }
 }

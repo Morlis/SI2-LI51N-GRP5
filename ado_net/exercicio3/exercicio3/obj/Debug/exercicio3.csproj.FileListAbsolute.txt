@@ -7,3 +7,4 @@ C:\Users\Andre\Documents\ISEL\SI2\TrabalhoFinal\codigoGit\SI2-LI51N-GRP5\ado_net
 C:\Users\Andre\Documents\ISEL\SI2\TrabalhoFinal\codigoGit\SI2-LI51N-GRP5\ado_net\exercicio3\exercicio3\bin\Debug\EntityFramework.SqlServer.xml
 C:\Users\Andre\Documents\ISEL\SI2\TrabalhoFinal\codigoGit\SI2-LI51N-GRP5\ado_net\exercicio3\exercicio3\obj\Debug\exercicio3.exe
 C:\Users\Andre\Documents\ISEL\SI2\TrabalhoFinal\codigoGit\SI2-LI51N-GRP5\ado_net\exercicio3\exercicio3\obj\Debug\exercicio3.pdb
+C:\Users\Andre\Documents\ISEL\SI2\TrabalhoFinal\codigoGit\SI2-LI51N-GRP5\ado_net\exercicio3\exercicio3\obj\Debug\exercicio3.csprojResolveAssemblyReference.cache
