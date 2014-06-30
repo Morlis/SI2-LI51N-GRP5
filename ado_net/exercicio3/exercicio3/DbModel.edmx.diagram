@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="f735d8491c7e4eb5849e66c7ae181bf3" Name="Diagram1">
+        <EntityTypeShape EntityType="SI2_1314v_TPModel.Afecto" Width="1.5" PointX="9.75" PointY="6.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SI2_1314v_TPModel.AreaIntervencao" Width="1.5" PointX="7.5" PointY="5.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="SI2_1314v_TPModel.Empresa" Width="1.5" PointX="0.75" PointY="1.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SI2_1314v_TPModel.Funcionario" Width="1.5" PointX="7.5" PointY="8.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="SI2_1314v_TPModel.Instalacao" Width="1.5" PointX="3" PointY="1.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="SI2_1314v_TPModel.Localizacao" Width="1.5" PointX="0.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SI2_1314v_TPModel.Ocorrencia" Width="1.5" PointX="7.5" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="SI2_1314v_TPModel.Sector" Width="1.5" PointX="5.25" PointY="1.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="SI2_1314v_TPModel.Trabalho" Width="1.5" PointX="9.75" PointY="1.5" IsExpanded="true" />
+        <AssociationConnector Association="SI2_1314v_TPModel.FK__Afecto__areaInt__267ABA7A" ManuallyRouted="false" />
+        <AssociationConnector Association="SI2_1314v_TPModel.FK__Afecto__numFunc__276EDEB3" ManuallyRouted="false" />
+        <AssociationConnector Association="SI2_1314v_TPModel.FK__Trabalho__areaIn__33D4B598" ManuallyRouted="false" />
+        <AssociationConnector Association="SI2_1314v_TPModel.FK__Instalaca__empre__1920BF5C" ManuallyRouted="false" />
+        <AssociationConnector Association="SI2_1314v_TPModel.FK__Ocorrenci__empre__2F10007B" ManuallyRouted="false" />
+        <AssociationConnector Association="SI2_1314v_TPModel.FK__Trabalho__coorde__34C8D9D1" ManuallyRouted="false" />
+        <AssociationConnector Association="SI2_1314v_TPModel.FK__Instalaca__local__1A14E395" ManuallyRouted="false" />
+        <AssociationConnector Association="SI2_1314v_TPModel.FK__Sector__codInst__1CF15040" ManuallyRouted="false" />
+        <AssociationConnector Association="SI2_1314v_TPModel.FK__Ocorrencia__300424B4" ManuallyRouted="false" />
+        <AssociationConnector Association="SI2_1314v_TPModel.FK__Trabalho__idOcor__32E0915F" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -1,0 +1,265 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="SI2_1314v_TPModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="SI2_1314v_TPModelStoreContainer">
+    <EntitySet Name="Afecto" EntityType="SI2_1314v_TPModel.Store.Afecto" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="AreaIntervencao" EntityType="SI2_1314v_TPModel.Store.AreaIntervencao" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Empresa" EntityType="SI2_1314v_TPModel.Store.Empresa" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Funcionario" EntityType="SI2_1314v_TPModel.Store.Funcionario" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Instalacao" EntityType="SI2_1314v_TPModel.Store.Instalacao" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Localizacao" EntityType="SI2_1314v_TPModel.Store.Localizacao" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Ocorrencia" EntityType="SI2_1314v_TPModel.Store.Ocorrencia" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Sector" EntityType="SI2_1314v_TPModel.Store.Sector" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Trabalho" EntityType="SI2_1314v_TPModel.Store.Trabalho" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="FK__Afecto__areaInt__267ABA7A" Association="SI2_1314v_TPModel.Store.FK__Afecto__areaInt__267ABA7A">
+      <End Role="AreaIntervencao" EntitySet="AreaIntervencao" />
+      <End Role="Afecto" EntitySet="Afecto" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Afecto__numFunc__276EDEB3" Association="SI2_1314v_TPModel.Store.FK__Afecto__numFunc__276EDEB3">
+      <End Role="Funcionario" EntitySet="Funcionario" />
+      <End Role="Afecto" EntitySet="Afecto" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Instalaca__empre__1920BF5C" Association="SI2_1314v_TPModel.Store.FK__Instalaca__empre__1920BF5C">
+      <End Role="Empresa" EntitySet="Empresa" />
+      <End Role="Instalacao" EntitySet="Instalacao" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Instalaca__local__1A14E395" Association="SI2_1314v_TPModel.Store.FK__Instalaca__local__1A14E395">
+      <End Role="Localizacao" EntitySet="Localizacao" />
+      <End Role="Instalacao" EntitySet="Instalacao" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Ocorrenci__empre__2F10007B" Association="SI2_1314v_TPModel.Store.FK__Ocorrenci__empre__2F10007B">
+      <End Role="Empresa" EntitySet="Empresa" />
+      <End Role="Ocorrencia" EntitySet="Ocorrencia" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Ocorrencia__300424B4" Association="SI2_1314v_TPModel.Store.FK__Ocorrencia__300424B4">
+      <End Role="Sector" EntitySet="Sector" />
+      <End Role="Ocorrencia" EntitySet="Ocorrencia" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Sector__codInst__1CF15040" Association="SI2_1314v_TPModel.Store.FK__Sector__codInst__1CF15040">
+      <End Role="Instalacao" EntitySet="Instalacao" />
+      <End Role="Sector" EntitySet="Sector" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Trabalho__areaIn__33D4B598" Association="SI2_1314v_TPModel.Store.FK__Trabalho__areaIn__33D4B598">
+      <End Role="AreaIntervencao" EntitySet="AreaIntervencao" />
+      <End Role="Trabalho" EntitySet="Trabalho" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Trabalho__coorde__34C8D9D1" Association="SI2_1314v_TPModel.Store.FK__Trabalho__coorde__34C8D9D1">
+      <End Role="Funcionario" EntitySet="Funcionario" />
+      <End Role="Trabalho" EntitySet="Trabalho" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Trabalho__idOcor__32E0915F" Association="SI2_1314v_TPModel.Store.FK__Trabalho__idOcor__32E0915F">
+      <End Role="Ocorrencia" EntitySet="Ocorrencia" />
+      <End Role="Trabalho" EntitySet="Trabalho" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Afecto">
+    <Key>
+      <PropertyRef Name="areaInt" />
+      <PropertyRef Name="numFunc" />
+    </Key>
+    <Property Name="areaInt" Type="int" Nullable="false" />
+    <Property Name="numFunc" Type="int" Nullable="false" />
+    <Property Name="dataHabilArea" Type="date" Nullable="false" />
+    <Property Name="éCoordenador" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="AreaIntervencao">
+    <Key>
+      <PropertyRef Name="cod" />
+    </Key>
+    <Property Name="cod" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="designacao" Type="varchar" Nullable="false" MaxLength="50" />
+    <Property Name="descricao" Type="varchar" MaxLength="250" />
+  </EntityType>
+  <EntityType Name="Empresa">
+    <Key>
+      <PropertyRef Name="nipc" />
+    </Key>
+    <Property Name="nipc" Type="int" Nullable="false" />
+    <Property Name="designacao" Type="varchar" Nullable="false" MaxLength="50" />
+    <Property Name="morada" Type="varchar" Nullable="false" MaxLength="255" />
+  </EntityType>
+  <EntityType Name="Funcionario">
+    <Key>
+      <PropertyRef Name="num" />
+    </Key>
+    <Property Name="num" Type="int" Nullable="false" />
+    <Property Name="nome" Type="varchar" Nullable="false" MaxLength="250" />
+    <Property Name="dataNasc" Type="date" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Instalacao">
+    <Key>
+      <PropertyRef Name="cod" />
+    </Key>
+    <Property Name="cod" Type="int" Nullable="false" />
+    <Property Name="descricao" Type="varchar" Nullable="false" MaxLength="150" />
+    <Property Name="empresa" Type="int" Nullable="false" />
+    <Property Name="localizacao" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Localizacao">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="morada" Type="varchar" Nullable="false" MaxLength="250" />
+    <Property Name="coordenadas" Type="varchar" Nullable="false" MaxLength="15" />
+  </EntityType>
+  <EntityType Name="Ocorrencia">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="dhEntrada" Type="datetime" Nullable="false" />
+    <Property Name="dhAlteracao" Type="datetime" Nullable="false" />
+    <Property Name="tipo" Type="char" Nullable="false" MaxLength="7" />
+    <Property Name="estado" Type="varchar" Nullable="false" MaxLength="16" />
+    <Property Name="codInst" Type="int" Nullable="false" />
+    <Property Name="piso" Type="int" Nullable="false" />
+    <Property Name="zona" Type="char" Nullable="false" MaxLength="1" />
+    <Property Name="empresa" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Sector">
+    <Key>
+      <PropertyRef Name="codInst" />
+      <PropertyRef Name="piso" />
+      <PropertyRef Name="zona" />
+    </Key>
+    <Property Name="codInst" Type="int" Nullable="false" />
+    <Property Name="piso" Type="int" Nullable="false" />
+    <Property Name="zona" Type="char" Nullable="false" MaxLength="1" />
+    <Property Name="descrição" Type="varchar" MaxLength="250" />
+    <Property Name="extintor" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Trabalho">
+    <Key>
+      <PropertyRef Name="idOcorr" />
+      <PropertyRef Name="areaInt" />
+    </Key>
+    <Property Name="idOcorr" Type="int" Nullable="false" />
+    <Property Name="areaInt" Type="int" Nullable="false" />
+    <Property Name="concluido" Type="bit" Nullable="false" />
+    <Property Name="coordenador" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="FK__Afecto__areaInt__267ABA7A">
+    <End Role="AreaIntervencao" Type="SI2_1314v_TPModel.Store.AreaIntervencao" Multiplicity="1" />
+    <End Role="Afecto" Type="SI2_1314v_TPModel.Store.Afecto" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AreaIntervencao">
+        <PropertyRef Name="cod" />
+      </Principal>
+      <Dependent Role="Afecto">
+        <PropertyRef Name="areaInt" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Afecto__numFunc__276EDEB3">
+    <End Role="Funcionario" Type="SI2_1314v_TPModel.Store.Funcionario" Multiplicity="1" />
+    <End Role="Afecto" Type="SI2_1314v_TPModel.Store.Afecto" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Funcionario">
+        <PropertyRef Name="num" />
+      </Principal>
+      <Dependent Role="Afecto">
+        <PropertyRef Name="numFunc" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Instalaca__empre__1920BF5C">
+    <End Role="Empresa" Type="SI2_1314v_TPModel.Store.Empresa" Multiplicity="1" />
+    <End Role="Instalacao" Type="SI2_1314v_TPModel.Store.Instalacao" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Empresa">
+        <PropertyRef Name="nipc" />
+      </Principal>
+      <Dependent Role="Instalacao">
+        <PropertyRef Name="empresa" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Instalaca__local__1A14E395">
+    <End Role="Localizacao" Type="SI2_1314v_TPModel.Store.Localizacao" Multiplicity="1" />
+    <End Role="Instalacao" Type="SI2_1314v_TPModel.Store.Instalacao" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Localizacao">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Instalacao">
+        <PropertyRef Name="localizacao" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Ocorrenci__empre__2F10007B">
+    <End Role="Empresa" Type="SI2_1314v_TPModel.Store.Empresa" Multiplicity="1" />
+    <End Role="Ocorrencia" Type="SI2_1314v_TPModel.Store.Ocorrencia" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Empresa">
+        <PropertyRef Name="nipc" />
+      </Principal>
+      <Dependent Role="Ocorrencia">
+        <PropertyRef Name="empresa" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Ocorrencia__300424B4">
+    <End Role="Sector" Type="SI2_1314v_TPModel.Store.Sector" Multiplicity="1" />
+    <End Role="Ocorrencia" Type="SI2_1314v_TPModel.Store.Ocorrencia" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Sector">
+        <PropertyRef Name="codInst" />
+        <PropertyRef Name="piso" />
+        <PropertyRef Name="zona" />
+      </Principal>
+      <Dependent Role="Ocorrencia">
+        <PropertyRef Name="codInst" />
+        <PropertyRef Name="piso" />
+        <PropertyRef Name="zona" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Sector__codInst__1CF15040">
+    <End Role="Instalacao" Type="SI2_1314v_TPModel.Store.Instalacao" Multiplicity="1" />
+    <End Role="Sector" Type="SI2_1314v_TPModel.Store.Sector" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Instalacao">
+        <PropertyRef Name="cod" />
+      </Principal>
+      <Dependent Role="Sector">
+        <PropertyRef Name="codInst" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Trabalho__areaIn__33D4B598">
+    <End Role="AreaIntervencao" Type="SI2_1314v_TPModel.Store.AreaIntervencao" Multiplicity="1" />
+    <End Role="Trabalho" Type="SI2_1314v_TPModel.Store.Trabalho" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AreaIntervencao">
+        <PropertyRef Name="cod" />
+      </Principal>
+      <Dependent Role="Trabalho">
+        <PropertyRef Name="areaInt" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Trabalho__coorde__34C8D9D1">
+    <End Role="Funcionario" Type="SI2_1314v_TPModel.Store.Funcionario" Multiplicity="1" />
+    <End Role="Trabalho" Type="SI2_1314v_TPModel.Store.Trabalho" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Funcionario">
+        <PropertyRef Name="num" />
+      </Principal>
+      <Dependent Role="Trabalho">
+        <PropertyRef Name="coordenador" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Trabalho__idOcor__32E0915F">
+    <End Role="Ocorrencia" Type="SI2_1314v_TPModel.Store.Ocorrencia" Multiplicity="1" />
+    <End Role="Trabalho" Type="SI2_1314v_TPModel.Store.Trabalho" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Ocorrencia">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Trabalho">
+        <PropertyRef Name="idOcorr" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>
