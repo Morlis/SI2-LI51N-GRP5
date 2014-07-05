@@ -14,23 +14,66 @@ namespace exercicio3
 
         enum EstadoOcorrencia { inicial, em_processamento, em_resolução, recusado, cancelado, concluído };
 
+        public static void WriteMenu()
+        {
+            Console.WriteLine("Escolha uma operação:");
+            Console.WriteLine("1 - Actualizar os dados de uma empresa");
+            Console.WriteLine("2 - Registar uma ocorrência");
+            Console.WriteLine("3 - Aceitação de uma ocorrência");
+            Console.WriteLine("4 - Determinar ocorrências em incumprimento");
+            Console.WriteLine("5 - Listar ocorrências concluídas");
+            Console.WriteLine("6 - Iniciar resolução de ocorrência");
+            Console.WriteLine("7 - Finalizar pretação de serviço");
+            Console.WriteLine("8 - Consultar informação de uma ocorrência");
+            Console.WriteLine("9 - Carregar ocorrências por XML");
+            Console.WriteLine("0 - Exit application");
+        }
+
         static void Main(string[] args)
         {
-           //Testar alinea a)
-     //       a(600016234, "Instituto Superior de Engenharia de Lisboa", "Rua Conselheiro Emídio Navarro 1_, 1959-007 Lisboa");
+            var operation = -1;
+            while (!operation.Equals(0))
+            {
+                switch (operation)
+                {
+                    case 1:
+                        //Testar alinea a)
+                        a(600016234, "Instituto Superior de Engenharia de Lisboa", "Rua Conselheiro Emídio Navarro 1_, 1959-007 Lisboa");
+                        break;
+                    case 2:
+                        //Testar alinea b)
+                        b(DateTime.Today , DateTime.Today, TipoOcorrencia.trivial, 1, 1, "A", 501510184);
+                        break;
+                    case 3:
+                        //Testar alinea c)
+                        c(21);
+                        break;
+                    case 4:
+                        //Testar alinea d)    
 
-            //Testar alinea b)
-     //       b(DateTime.Today , DateTime.Today, TipoOcorrencia.trivial, 1, 1, "A", 501510184);
-
-            //Testar alinea c)
-     //       c(21);
-
-
-            //Testar alinea d)    
+                        //       b(new DateTime(2014,03,25,10,20,30,00) , DateTime.Today, TipoOcorrencia.crítico, 1, 1, "A", 501510184);
+                        //       b(DateTime.Now, DateTime.Now, TipoOcorrencia.crítico, 1, 1, "A", 501510184);  
+                        //       d();
+                        break;
+                    case 5:
+                        break;
+                    case 6:
+                        break;
+                    case 7:
+                        break;
+                    case 8:
+                        break;
+                    case 9:
+                        break;
+                    case 0:
+                        return;
+                    default:
+                        WriteMenu();
+                        operation = Convert.ToInt32(Console.ReadLine());
+                        break;
+                }
+            }
             
-     //       b(new DateTime(2014,03,25,10,20,30,00) , DateTime.Today, TipoOcorrencia.crítico, 1, 1, "A", 501510184);
-     //       b(DateTime.Now, DateTime.Now, TipoOcorrencia.crítico, 1, 1, "A", 501510184);  
-            d();
         }
 
 
