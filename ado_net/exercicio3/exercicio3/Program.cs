@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data.SqlClient;
+using System.Data;
+using System.Configuration;
+using System.Collections.Specialized;
 
 namespace exercicio3
 {
@@ -346,7 +350,75 @@ namespace exercicio3
 
         static void i()
         {
+            SqlConnection conn = new SqlConnection();
+            conn.ConnectionString = ConfigurationManager.ConnectionStrings["SI2_1314v_ADO_NET"].ConnectionString;
+            SqlCommand cmd; 
+            string sqlCmdOcorrencias = "INSERT INTO Ocorrencia (" +
+                " dhEntrada, dhAlteracao, tipo, estado, codInst, piso, zona, empresa " +
+                ") VALUES (" +
+            " @dhEntrada, @dhAlteracao, @tipo, @estado, @codInst, @piso, @zona, @empresa " +
+            " )";
 
+            string sqlCmdTrabalho = "INSERT INTO Trabalho (" +
+                " idOcorr, areaInt, concluido, coordenador " +
+                ") VALUES (" +
+            " @idOcorr, @areaInt, @concluido, @coordenador " +
+            " )";
+
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet dataSet = new DataSet();
+
+            // "../../../../../xml/ocorrencias.xml"
+            dataSet.ReadXml((ConfigurationManager.GetSection("resources") as NameValueCollection)["Ocorrencias_xml"]);
+            DataTable dataTable = dataSet.Tables["Ocorrencia"];
+
+            conn.Open();
+
+            Console.WriteLine("Inserindo registos em 'Ocorrencia'");
+            foreach(DataRow dataRow in dataTable.Rows)
+            {
+
+                Console.WriteLine("id = " + dataRow["id"]);
+                cmd = conn.CreateCommand();
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = sqlCmdOcorrencias;
+
+                cmd.Parameters.Add("@dhEntrada",SqlDbType.DateTime).Value = Convert.ToDateTime(dataRow["dhEntrada"]);
+                cmd.Parameters.Add("@dhAlteracao", SqlDbType.DateTime).Value = Convert.ToDateTime(dataRow["dhAlteracao"]);
+                cmd.Parameters.Add("@tipo", SqlDbType.VarChar).Value = Convert.ToString(dataRow["tipo"]);
+                cmd.Parameters.Add("@estado", SqlDbType.VarChar).Value = Convert.ToString(dataRow["estado"]);
+                cmd.Parameters.Add("@codInst", SqlDbType.Int).Value = Convert.ToInt32(dataRow["codInst"]);
+                cmd.Parameters.Add("@piso", SqlDbType.Int).Value = Convert.ToInt32(dataRow["piso"]);
+                cmd.Parameters.Add("@zona", SqlDbType.VarChar).Value = Convert.ToString(dataRow["zona"]);
+                cmd.Parameters.Add("@empresa", SqlDbType.Int).Value = Convert.ToInt32(dataRow["empresa"]);
+
+                cmd.ExecuteNonQuery();
+            }
+            
+            dataTable = dataSet.Tables["Trabalho"];
+            Console.WriteLine("Inserindo registos em 'Trabalho'");
+            foreach (DataRow dataRow in dataTable.Rows)
+            {
+                if (dataRow["idOcorr"].Equals(System.DBNull.Value))
+                    continue;
+                Console.WriteLine("id = " + dataRow["idOcorr"]);
+                cmd = conn.CreateCommand();
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = sqlCmdTrabalho;
+
+                cmd.Parameters.Add("@idOcorr", SqlDbType.Int).Value = Convert.ToInt32(dataRow["idOcorr"]);
+                cmd.Parameters.Add("@areaInt", SqlDbType.Int).Value = Convert.ToInt32(dataRow["areaInt"]);
+                cmd.Parameters.Add("@concluido", SqlDbType.Bit).Value = Convert.ToInt32(dataRow["concluido"]);
+                cmd.Parameters.Add("@coordenador", SqlDbType.Int).Value = Convert.ToInt32(dataRow["coordenador"]);
+                
+                cmd.ExecuteNonQuery();
+            }
+            
+            conn.Close();
+
+            Console.WriteLine("Prima uma tecla para continuar");
+            Console.ReadKey();
         }
+
     }
 }
