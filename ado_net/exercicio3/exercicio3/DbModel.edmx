@@ -272,7 +272,7 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="SI2_1314v_TPModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityContainer Name="SI2_1314v_TPEntities" p1:LazyLoadingEnabled="true">
+        <EntityContainer Name="SI2_1314v_TPEntities1" p1:LazyLoadingEnabled="true">
           <EntitySet Name="Afectoes" EntityType="SI2_1314v_TPModel.Afecto" />
           <EntitySet Name="AreaIntervencaos" EntityType="SI2_1314v_TPModel.AreaIntervencao" />
           <EntitySet Name="Empresas" EntityType="SI2_1314v_TPModel.Empresa" />
@@ -559,7 +559,7 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="SI2_1314v_TPModelStoreContainer" CdmEntityContainer="SI2_1314v_TPEntities">
+        <EntityContainerMapping StorageEntityContainer="SI2_1314v_TPModelStoreContainer" CdmEntityContainer="SI2_1314v_TPEntities1">
           <EntitySetMapping Name="Afectoes">
             <EntityTypeMapping TypeName="SI2_1314v_TPModel.Afecto">
               <MappingFragment StoreEntitySet="Afecto">

@@ -13,10 +13,10 @@ namespace exercicio3
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class SI2_1314v_TPEntities : DbContext
+    public partial class SI2_1314v_TPEntities1 : DbContext
     {
-        public SI2_1314v_TPEntities()
-            : base("name=SI2_1314v_TPEntities")
+        public SI2_1314v_TPEntities1()
+            : base("name=SI2_1314v_TPEntities1")
         {
         }
     
