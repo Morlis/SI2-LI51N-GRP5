@@ -15,27 +15,6 @@
           <EntitySet Name="Ocorrencia" EntityType="SI2_1314v_TPModel.Store.Ocorrencia" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Sector" EntityType="SI2_1314v_TPModel.Store.Sector" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Trabalho" EntityType="SI2_1314v_TPModel.Store.Trabalho" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="OcorrenciasEmIncumprimento" EntityType="SI2_1314v_TPModel.Store.OcorrenciasEmIncumprimento" store:Type="Views" store:Schema="dbo" store:Name="OcorrenciasEmIncumprimento">
-            <DefiningQuery>SELECT 
-      [OcorrenciasEmIncumprimento].[id] AS [id], 
-      [OcorrenciasEmIncumprimento].[dhEntrada] AS [dhEntrada], 
-      [OcorrenciasEmIncumprimento].[dhAlteracao] AS [dhAlteracao], 
-      [OcorrenciasEmIncumprimento].[tipo] AS [tipo], 
-      [OcorrenciasEmIncumprimento].[estado] AS [estado], 
-      [OcorrenciasEmIncumprimento].[codInst] AS [codInst], 
-      [OcorrenciasEmIncumprimento].[piso] AS [piso], 
-      [OcorrenciasEmIncumprimento].[zona] AS [zona], 
-      [OcorrenciasEmIncumprimento].[empresa] AS [empresa], 
-      [OcorrenciasEmIncumprimento].[HOURa] AS [HOURa]
-      FROM [dbo].[OcorrenciasEmIncumprimento] AS [OcorrenciasEmIncumprimento]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="TotalOcorrenciaPorEmpresaPorTipo" EntityType="SI2_1314v_TPModel.Store.TotalOcorrenciaPorEmpresaPorTipo" store:Type="Views" store:Schema="dbo" store:Name="TotalOcorrenciaPorEmpresaPorTipo">
-            <DefiningQuery>SELECT 
-      [TotalOcorrenciaPorEmpresaPorTipo].[empresa] AS [empresa], 
-      [TotalOcorrenciaPorEmpresaPorTipo].[tipo] AS [tipo], 
-      [TotalOcorrenciaPorEmpresaPorTipo].[nrOcorrTipo] AS [nrOcorrTipo]
-      FROM [dbo].[TotalOcorrenciaPorEmpresaPorTipo] AS [TotalOcorrenciaPorEmpresaPorTipo]</DefiningQuery>
-          </EntitySet>
           <AssociationSet Name="FK__Afecto__areaInt__267ABA7A" Association="SI2_1314v_TPModel.Store.FK__Afecto__areaInt__267ABA7A">
             <End Role="AreaIntervencao" EntitySet="AreaIntervencao" />
             <End Role="Afecto" EntitySet="Afecto" />
@@ -164,44 +143,6 @@
           <Property Name="concluido" Type="bit" Nullable="false" />
           <Property Name="coordenador" Type="int" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-      warning 6002: The table/view 'SI2_1314v_TP.dbo.OcorrenciasEmIncumprimento' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.
-      -->
-        <EntityType Name="OcorrenciasEmIncumprimento">
-          <Key>
-            <PropertyRef Name="id" />
-            <PropertyRef Name="dhEntrada" />
-            <PropertyRef Name="dhAlteracao" />
-            <PropertyRef Name="tipo" />
-            <PropertyRef Name="estado" />
-            <PropertyRef Name="codInst" />
-            <PropertyRef Name="piso" />
-            <PropertyRef Name="zona" />
-            <PropertyRef Name="empresa" />
-          </Key>
-          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="dhEntrada" Type="datetime" Nullable="false" />
-          <Property Name="dhAlteracao" Type="datetime" Nullable="false" />
-          <Property Name="tipo" Type="char" Nullable="false" MaxLength="7" />
-          <Property Name="estado" Type="varchar" Nullable="false" MaxLength="16" />
-          <Property Name="codInst" Type="int" Nullable="false" />
-          <Property Name="piso" Type="int" Nullable="false" />
-          <Property Name="zona" Type="char" Nullable="false" MaxLength="1" />
-          <Property Name="empresa" Type="int" Nullable="false" />
-          <Property Name="HOURa" Type="int" />
-        </EntityType>
-        <!--Errors Found During Generation:
-      warning 6002: The table/view 'SI2_1314v_TP.dbo.TotalOcorrenciaPorEmpresaPorTipo' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.
-      -->
-        <EntityType Name="TotalOcorrenciaPorEmpresaPorTipo">
-          <Key>
-            <PropertyRef Name="empresa" />
-            <PropertyRef Name="tipo" />
-          </Key>
-          <Property Name="empresa" Type="int" Nullable="false" />
-          <Property Name="tipo" Type="char" Nullable="false" MaxLength="7" />
-          <Property Name="nrOcorrTipo" Type="int" />
-        </EntityType>
         <Association Name="FK__Afecto__areaInt__267ABA7A">
           <End Role="AreaIntervencao" Type="SI2_1314v_TPModel.Store.AreaIntervencao" Multiplicity="1" />
           <End Role="Afecto" Type="SI2_1314v_TPModel.Store.Afecto" Multiplicity="*" />
@@ -326,57 +267,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Function Name="AssignarOcorrencia" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="id" Type="int" Mode="In" />
-        </Function>
-        <Function Name="CancelarOcorrencia" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="id" Type="int" Mode="In" />
-        </Function>
-        <Function Name="EditarEmpresa" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="nipc" Type="int" Mode="In" />
-          <Parameter Name="designacao" Type="varchar" Mode="In" />
-          <Parameter Name="morada" Type="varchar" Mode="In" />
-        </Function>
-        <Function Name="FuncionarioComMenosOcorrenciasActivas" ReturnType="int" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="areaID" Type="int" Mode="In" />
-        </Function>
-        <Function Name="InserirAreaIntervencao" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="id" Type="int" Mode="InOut" />
-          <Parameter Name="designacao" Type="varchar" Mode="In" />
-          <Parameter Name="descricao" Type="varchar" Mode="In" />
-        </Function>
-        <Function Name="InserirEmpresa" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="nipc" Type="int" Mode="In" />
-          <Parameter Name="designacao" Type="varchar" Mode="In" />
-          <Parameter Name="morada" Type="varchar" Mode="In" />
-        </Function>
-        <Function Name="ListarFuncionariosCoordenadoresSemOcorrenciasCriticas" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
-        <Function Name="numTrabalhosEmCursoPorOcorrencia" ReturnType="int" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="idOcorr" Type="int" Mode="In" />
-        </Function>
-        <Function Name="ObterEmpresaComMaxCritoOcorrPorAreaInt" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="areaInt" Type="int" Mode="In" />
-          <ReturnType>
-            <CollectionType>
-              <RowType>
-                <Property Name="empresa" Type="int" Nullable="false" />
-                <Property Name="Ocurrencias" Type="int" />
-              </RowType>
-            </CollectionType>
-          </ReturnType>
-        </Function>
-        <Function Name="obterPontosPorEmpresa" ReturnType="int" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="empresa" Type="int" Mode="In" />
-        </Function>
-        <Function Name="processarPontosPorIncumprimento" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
-        <Function Name="ReportarOcorrencia" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="tipo" Type="char" Mode="In" />
-          <Parameter Name="empresa" Type="int" Mode="In" />
-          <Parameter Name="codInst" Type="int" Mode="In" />
-          <Parameter Name="piso" Type="int" Mode="In" />
-          <Parameter Name="zona" Type="char" Mode="In" />
-          <Parameter Name="id" Type="int" Mode="InOut" />
-        </Function>
       </Schema>
     </edmx:StorageModels>
     <!-- CSDL content -->
@@ -392,8 +282,6 @@
           <EntitySet Name="Ocorrencias" EntityType="SI2_1314v_TPModel.Ocorrencia" />
           <EntitySet Name="Sectors" EntityType="SI2_1314v_TPModel.Sector" />
           <EntitySet Name="Trabalhoes" EntityType="SI2_1314v_TPModel.Trabalho" />
-          <EntitySet Name="OcorrenciasEmIncumprimentoes" EntityType="SI2_1314v_TPModel.OcorrenciasEmIncumprimento" />
-          <EntitySet Name="TotalOcorrenciaPorEmpresaPorTipoes" EntityType="SI2_1314v_TPModel.TotalOcorrenciaPorEmpresaPorTipo" />
           <AssociationSet Name="FK__Afecto__areaInt__267ABA7A" Association="SI2_1314v_TPModel.FK__Afecto__areaInt__267ABA7A">
             <End Role="AreaIntervencao" EntitySet="AreaIntervencaos" />
             <End Role="Afecto" EntitySet="Afectoes" />
@@ -434,45 +322,7 @@
             <End Role="Ocorrencia" EntitySet="Ocorrencias" />
             <End Role="Trabalho" EntitySet="Trabalhoes" />
           </AssociationSet>
-          <FunctionImport Name="ObterEmpresaComMaxCritoOcorrPorAreaInt" ReturnType="Collection(SI2_1314v_TPModel.ObterEmpresaComMaxCritoOcorrPorAreaInt_Result)" IsComposable="true">
-            <Parameter Name="areaInt" Type="Int32" />
-          </FunctionImport>
-          <FunctionImport Name="AssignarOcorrencia">
-            <Parameter Name="id" Mode="In" Type="Int32" />
-          </FunctionImport>
-          <FunctionImport Name="CancelarOcorrencia">
-            <Parameter Name="id" Mode="In" Type="Int32" />
-          </FunctionImport>
-          <FunctionImport Name="EditarEmpresa">
-            <Parameter Name="nipc" Mode="In" Type="Int32" />
-            <Parameter Name="designacao" Mode="In" Type="String" />
-            <Parameter Name="morada" Mode="In" Type="String" />
-          </FunctionImport>
-          <FunctionImport Name="InserirAreaIntervencao">
-            <Parameter Name="id" Mode="InOut" Type="Int32" />
-            <Parameter Name="designacao" Mode="In" Type="String" />
-            <Parameter Name="descricao" Mode="In" Type="String" />
-          </FunctionImport>
-          <FunctionImport Name="InserirEmpresa">
-            <Parameter Name="nipc" Mode="In" Type="Int32" />
-            <Parameter Name="designacao" Mode="In" Type="String" />
-            <Parameter Name="morada" Mode="In" Type="String" />
-          </FunctionImport>
-          <FunctionImport Name="ListarFuncionariosCoordenadoresSemOcorrenciasCriticas" ReturnType="Collection(String)" />
-          <FunctionImport Name="processarPontosPorIncumprimento" />
-          <FunctionImport Name="ReportarOcorrencia" ReturnType="Collection(Int32)">
-            <Parameter Name="tipo" Mode="In" Type="String" />
-            <Parameter Name="empresa" Mode="In" Type="Int32" />
-            <Parameter Name="codInst" Mode="In" Type="Int32" />
-            <Parameter Name="piso" Mode="In" Type="Int32" />
-            <Parameter Name="zona" Mode="In" Type="String" />
-            <Parameter Name="id" Mode="InOut" Type="Int32" />
-          </FunctionImport>
         </EntityContainer>
-        <ComplexType Name="ObterEmpresaComMaxCritoOcorrPorAreaInt_Result">
-          <Property Name="empresa" Type="Int32" Nullable="false" />
-          <Property Name="Ocurrencias" Type="Int32" />
-        </ComplexType>
         <EntityType Name="Afecto">
           <Key>
             <PropertyRef Name="areaInt" />
@@ -579,38 +429,6 @@
           <NavigationProperty Name="AreaIntervencao" Relationship="SI2_1314v_TPModel.FK__Trabalho__areaIn__33D4B598" FromRole="Trabalho" ToRole="AreaIntervencao" />
           <NavigationProperty Name="Funcionario" Relationship="SI2_1314v_TPModel.FK__Trabalho__coorde__34C8D9D1" FromRole="Trabalho" ToRole="Funcionario" />
           <NavigationProperty Name="Ocorrencia" Relationship="SI2_1314v_TPModel.FK__Trabalho__idOcor__32E0915F" FromRole="Trabalho" ToRole="Ocorrencia" />
-        </EntityType>
-        <EntityType Name="OcorrenciasEmIncumprimento">
-          <Key>
-            <PropertyRef Name="id" />
-            <PropertyRef Name="dhEntrada" />
-            <PropertyRef Name="dhAlteracao" />
-            <PropertyRef Name="tipo" />
-            <PropertyRef Name="estado" />
-            <PropertyRef Name="codInst" />
-            <PropertyRef Name="piso" />
-            <PropertyRef Name="zona" />
-            <PropertyRef Name="empresa" />
-          </Key>
-          <Property Name="id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
-          <Property Name="dhEntrada" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="dhAlteracao" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="tipo" Type="String" Nullable="false" MaxLength="7" Unicode="false" FixedLength="true" />
-          <Property Name="estado" Type="String" Nullable="false" MaxLength="16" Unicode="false" FixedLength="false" />
-          <Property Name="codInst" Type="Int32" Nullable="false" />
-          <Property Name="piso" Type="Int32" Nullable="false" />
-          <Property Name="zona" Type="String" Nullable="false" MaxLength="1" Unicode="false" FixedLength="true" />
-          <Property Name="empresa" Type="Int32" Nullable="false" />
-          <Property Name="HOURa" Type="Int32" />
-        </EntityType>
-        <EntityType Name="TotalOcorrenciaPorEmpresaPorTipo">
-          <Key>
-            <PropertyRef Name="empresa" />
-            <PropertyRef Name="tipo" />
-          </Key>
-          <Property Name="empresa" Type="Int32" Nullable="false" />
-          <Property Name="tipo" Type="String" Nullable="false" MaxLength="7" Unicode="false" FixedLength="true" />
-          <Property Name="nrOcorrTipo" Type="Int32" />
         </EntityType>
         <Association Name="FK__Afecto__areaInt__267ABA7A">
           <End Role="AreaIntervencao" Type="SI2_1314v_TPModel.AreaIntervencao" Multiplicity="1" />
@@ -834,47 +652,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="OcorrenciasEmIncumprimentoes">
-            <EntityTypeMapping TypeName="SI2_1314v_TPModel.OcorrenciasEmIncumprimento">
-              <MappingFragment StoreEntitySet="OcorrenciasEmIncumprimento">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="dhEntrada" ColumnName="dhEntrada" />
-                <ScalarProperty Name="dhAlteracao" ColumnName="dhAlteracao" />
-                <ScalarProperty Name="tipo" ColumnName="tipo" />
-                <ScalarProperty Name="estado" ColumnName="estado" />
-                <ScalarProperty Name="codInst" ColumnName="codInst" />
-                <ScalarProperty Name="piso" ColumnName="piso" />
-                <ScalarProperty Name="zona" ColumnName="zona" />
-                <ScalarProperty Name="empresa" ColumnName="empresa" />
-                <ScalarProperty Name="HOURa" ColumnName="HOURa" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="TotalOcorrenciaPorEmpresaPorTipoes">
-            <EntityTypeMapping TypeName="SI2_1314v_TPModel.TotalOcorrenciaPorEmpresaPorTipo">
-              <MappingFragment StoreEntitySet="TotalOcorrenciaPorEmpresaPorTipo">
-                <ScalarProperty Name="empresa" ColumnName="empresa" />
-                <ScalarProperty Name="tipo" ColumnName="tipo" />
-                <ScalarProperty Name="nrOcorrTipo" ColumnName="nrOcorrTipo" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <FunctionImportMapping FunctionName="SI2_1314v_TPModel.Store.ObterEmpresaComMaxCritoOcorrPorAreaInt" FunctionImportName="ObterEmpresaComMaxCritoOcorrPorAreaInt">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="SI2_1314v_TPModel.ObterEmpresaComMaxCritoOcorrPorAreaInt_Result">
-                <ScalarProperty Name="empresa" ColumnName="empresa" />
-                <ScalarProperty Name="Ocurrencias" ColumnName="Ocurrencias" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="AssignarOcorrencia" FunctionName="SI2_1314v_TPModel.Store.AssignarOcorrencia" />
-          <FunctionImportMapping FunctionImportName="CancelarOcorrencia" FunctionName="SI2_1314v_TPModel.Store.CancelarOcorrencia" />
-          <FunctionImportMapping FunctionImportName="EditarEmpresa" FunctionName="SI2_1314v_TPModel.Store.EditarEmpresa" />
-          <FunctionImportMapping FunctionImportName="InserirAreaIntervencao" FunctionName="SI2_1314v_TPModel.Store.InserirAreaIntervencao" />
-          <FunctionImportMapping FunctionImportName="InserirEmpresa" FunctionName="SI2_1314v_TPModel.Store.InserirEmpresa" />
-          <FunctionImportMapping FunctionImportName="ListarFuncionariosCoordenadoresSemOcorrenciasCriticas" FunctionName="SI2_1314v_TPModel.Store.ListarFuncionariosCoordenadoresSemOcorrenciasCriticas" />
-          <FunctionImportMapping FunctionImportName="processarPontosPorIncumprimento" FunctionName="SI2_1314v_TPModel.Store.processarPontosPorIncumprimento" />
-          <FunctionImportMapping FunctionImportName="ReportarOcorrencia" FunctionName="SI2_1314v_TPModel.Store.ReportarOcorrencia" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

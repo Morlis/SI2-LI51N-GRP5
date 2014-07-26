@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="17fce2e883704425b4e5332c9f500cbf" Name="Diagram1">
+      <Diagram DiagramId="c5819dbd26494c64af10293f9ab5fdb6" Name="Diagram1">
         <EntityTypeShape EntityType="SI2_1314v_TPModel.Afecto" Width="1.5" PointX="9.75" PointY="6.625" IsExpanded="true" />
         <EntityTypeShape EntityType="SI2_1314v_TPModel.AreaIntervencao" Width="1.5" PointX="7.5" PointY="5.375" IsExpanded="true" />
         <EntityTypeShape EntityType="SI2_1314v_TPModel.Empresa" Width="1.5" PointX="0.75" PointY="1.625" IsExpanded="true" />
@@ -14,8 +14,6 @@
         <EntityTypeShape EntityType="SI2_1314v_TPModel.Ocorrencia" Width="1.5" PointX="7.5" PointY="1" IsExpanded="true" />
         <EntityTypeShape EntityType="SI2_1314v_TPModel.Sector" Width="1.5" PointX="5.25" PointY="1.5" IsExpanded="true" />
         <EntityTypeShape EntityType="SI2_1314v_TPModel.Trabalho" Width="1.5" PointX="9.75" PointY="1.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="SI2_1314v_TPModel.OcorrenciasEmIncumprimento" Width="1.5" PointX="2.75" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="SI2_1314v_TPModel.TotalOcorrenciaPorEmpresaPorTipo" Width="1.5" PointX="4.75" PointY="4.75" IsExpanded="true" />
         <AssociationConnector Association="SI2_1314v_TPModel.FK__Afecto__areaInt__267ABA7A" ManuallyRouted="false" />
         <AssociationConnector Association="SI2_1314v_TPModel.FK__Afecto__numFunc__276EDEB3" ManuallyRouted="false" />
         <AssociationConnector Association="SI2_1314v_TPModel.FK__Trabalho__areaIn__33D4B598" ManuallyRouted="false" />

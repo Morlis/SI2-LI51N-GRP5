@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.Data;
 using System.Configuration;
 using System.Collections.Specialized;
+using System.Data.Query;
 
 namespace exercicio3
 {
@@ -15,7 +16,6 @@ namespace exercicio3
     class Program
     {
         enum TipoOcorrencia { urgente, crítico, trivial };
-
         enum EstadoOcorrencia { inicial, em_processamento, em_resolução, recusado, cancelado, concluído };
 
         public static void WriteMenu()
@@ -41,45 +41,55 @@ namespace exercicio3
                 switch (operation)
                 {
                     case 'a':
-                        //Testar alinea a)
-                        a(600016234, "Instituto Superior de Engenharia de Lisboa", "Rua Conselheiro Emídio Navarro 1_, 1959-007 Lisboa");
+                        // Testar alinea a)
+                        // a(600016234, "Instituto Superior de Engenharia de Lisboa", "Rua Conselheiro Emídio Navarro 1, 1959-007 Lisboa");
                         operation = -1;
                         break;
                     case 'b':
-                        //Testar alinea b)
-                        b(DateTime.Today, DateTime.Today, TipoOcorrencia.trivial, 1, 1, "A", 501510184);
+                        // Testar alinea b)
+                        // b(DateTime.Today, DateTime.Today, TipoOcorrencia.trivial, 1, 1, "A", 501510184);
+                        // b(DateTime.Today, DateTime.Today, TipoOcorrencia.trivial, 1, 1, "A", 501510184, 1,3);
                         operation = -1;
                         break;
                     case 'c':
-                        //Testar alinea c)
+                        // Testar alinea c)
                         c(21);
                         operation = -1;
                         break;
                     case 'd':
-                        //Testar alinea d)    
-
-                        //       b(new DateTime(2014,03,25,10,20,30,00) , DateTime.Today, TipoOcorrencia.crítico, 1, 1, "A", 501510184);
-                        //       b(DateTime.Now, DateTime.Now, TipoOcorrencia.crítico, 1, 1, "A", 501510184);  
-                        //       d();
+                        // Testar alinea d)    
+                        // b(new DateTime(2014,03,25,10,20,30,00) , DateTime.Today, TipoOcorrencia.crítico, 1, 1, "A", 501510184);
+                        // b(DateTime.Now, DateTime.Now, TipoOcorrencia.crítico, 1, 1, "A", 501510184);  
+                        // d();
                         operation = -1;
                         break;
                     case 'e':
+                        // Testar alinea e)
                         e();
                         operation = -1;
                         break;
                     case 'f':
-                    //    ...
+                        // Testar alinea f)
+                        // f(7); // a Ocorrência 7 (em processamento) tem um Trabalho para a Area de Intervenção 1
+                        // f(27);
                         operation = -1;
                         break;
                     case 'g':
-                    //    ...
+                        // Testar alinea g)
+                        /* O trabalho da Ocorrência 7 para a Area de Intervenção 1 ainda não está concluído.
+                            * Após esta operação, a Ocorrência 7 passará de <em resolução> para <concluído>, por
+                            * ação do Trigger conclusãoTrabalhoAreaIntervencao
+                            */
+                        // g(7, 1);  
                         operation = -1;
                         break;
                     case 'h':
+                        // Testar alinea h)
                         h();
                         operation = -1;
                         break;
                     case 'i':
+                        // Testar alinea i)
                         i();
                         operation = -1;
                         break;
@@ -91,7 +101,6 @@ namespace exercicio3
                         break;
                 }
             }
-
         }
 
 
@@ -146,7 +155,7 @@ namespace exercicio3
 
                     ctx.Ocorrencias.Add(occurr);
                     
-                    int idOccurr = occurr.id;     // Verificar se esta operação é possível
+                    int idOccurr = occurr.id;
 
                     // Adicionar os trabalhos para cada área de intervenção
                     foreach (int cod in codAI) {
@@ -155,7 +164,10 @@ namespace exercicio3
                             idOcorr = idOccurr,
                             areaInt = cod,
                             concluido = false,
-                            coordenador = -1   // o coordenador será atribuido posteriormente
+                            /* É atribuído por defeito um 'Dummy coordenador'. O coordenador real será atribuído posteriormente.
+                                * Para esta implementação, a funcção FuncionarioComMenosOcorrenciasActivas deverá NÃO considerar
+                                * o 'Dummy coordenador' */
+                            coordenador = 10  // 10 - 'Dummy coordenador'
                         };
                         ctx.Trabalhoes.Add(trab);
                     }
@@ -164,7 +176,7 @@ namespace exercicio3
                     ctx.SaveChanges();
                 }
                 else
-                    Console.WriteLine("ERRO: A empresa com o nipc {0} não existe no sistema, ou foram indicadas mais de três áreas de intervenção.", empresa);
+                    Console.WriteLine("ERRO: A empresa com o nipc {0} não existe no sistema, OU ENTÃO foram indicadas mais de três áreas de intervenção.", empresa);
             }
         }
 
@@ -338,9 +350,13 @@ namespace exercicio3
                                         where t.concluido == false
                                         select t).FirstOrDefault();
 
-                 //   trab.coordenador = ctx.FuncionarioComMenosOcorrenciasActivas(trab.areaInt);   Erro: o contexto não contém a definição para a função!!!!
+                    string sqlQueryFunc = "SELECT [dbo].[FuncionarioComMenosOcorrenciasActivas] ({0})";
+                    //object[] parameters = { trab.areaInt };
+
+                    trab.coordenador = ctx.Database.SqlQuery<int>(sqlQueryFunc, trab.areaInt).FirstOrDefault();
 
                     ocorr.estado = "em resolução";
+                    Console.WriteLine("Operação efetuada com êxito. A Ocorrência {0} já se encontra no estado <{1}>\n Foi atribuído o coordenador {2}", ocorr.id, ocorr.estado, trab.coordenador);
                     ctx.SaveChanges();
                 }
                 else {

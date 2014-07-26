@@ -12,9 +12,6 @@ namespace exercicio3
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
-    using System.Data.Objects;
-    using System.Data.Objects.DataClasses;
-    using System.Linq;
     
     public partial class SI2_1314v_TPEntities2 : DbContext
     {
@@ -37,117 +34,5 @@ namespace exercicio3
         public DbSet<Ocorrencia> Ocorrencias { get; set; }
         public DbSet<Sector> Sectors { get; set; }
         public DbSet<Trabalho> Trabalhoes { get; set; }
-        public DbSet<OcorrenciasEmIncumprimento> OcorrenciasEmIncumprimentoes { get; set; }
-        public DbSet<TotalOcorrenciaPorEmpresaPorTipo> TotalOcorrenciaPorEmpresaPorTipoes { get; set; }
-    
-        [EdmFunction("SI2_1314v_TPEntities2", "ObterEmpresaComMaxCritoOcorrPorAreaInt")]
-        public virtual IQueryable<ObterEmpresaComMaxCritoOcorrPorAreaInt_Result> ObterEmpresaComMaxCritoOcorrPorAreaInt(Nullable<int> areaInt)
-        {
-            var areaIntParameter = areaInt.HasValue ?
-                new ObjectParameter("areaInt", areaInt) :
-                new ObjectParameter("areaInt", typeof(int));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<ObterEmpresaComMaxCritoOcorrPorAreaInt_Result>("[SI2_1314v_TPEntities2].[ObterEmpresaComMaxCritoOcorrPorAreaInt](@areaInt)", areaIntParameter);
-        }
-    
-        public virtual int AssignarOcorrencia(Nullable<int> id)
-        {
-            var idParameter = id.HasValue ?
-                new ObjectParameter("id", id) :
-                new ObjectParameter("id", typeof(int));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("AssignarOcorrencia", idParameter);
-        }
-    
-        public virtual int CancelarOcorrencia(Nullable<int> id)
-        {
-            var idParameter = id.HasValue ?
-                new ObjectParameter("id", id) :
-                new ObjectParameter("id", typeof(int));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("CancelarOcorrencia", idParameter);
-        }
-    
-        public virtual int EditarEmpresa(Nullable<int> nipc, string designacao, string morada)
-        {
-            var nipcParameter = nipc.HasValue ?
-                new ObjectParameter("nipc", nipc) :
-                new ObjectParameter("nipc", typeof(int));
-    
-            var designacaoParameter = designacao != null ?
-                new ObjectParameter("designacao", designacao) :
-                new ObjectParameter("designacao", typeof(string));
-    
-            var moradaParameter = morada != null ?
-                new ObjectParameter("morada", morada) :
-                new ObjectParameter("morada", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("EditarEmpresa", nipcParameter, designacaoParameter, moradaParameter);
-        }
-    
-        public virtual int InserirAreaIntervencao(ObjectParameter id, string designacao, string descricao)
-        {
-            var designacaoParameter = designacao != null ?
-                new ObjectParameter("designacao", designacao) :
-                new ObjectParameter("designacao", typeof(string));
-    
-            var descricaoParameter = descricao != null ?
-                new ObjectParameter("descricao", descricao) :
-                new ObjectParameter("descricao", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InserirAreaIntervencao", id, designacaoParameter, descricaoParameter);
-        }
-    
-        public virtual int InserirEmpresa(Nullable<int> nipc, string designacao, string morada)
-        {
-            var nipcParameter = nipc.HasValue ?
-                new ObjectParameter("nipc", nipc) :
-                new ObjectParameter("nipc", typeof(int));
-    
-            var designacaoParameter = designacao != null ?
-                new ObjectParameter("designacao", designacao) :
-                new ObjectParameter("designacao", typeof(string));
-    
-            var moradaParameter = morada != null ?
-                new ObjectParameter("morada", morada) :
-                new ObjectParameter("morada", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InserirEmpresa", nipcParameter, designacaoParameter, moradaParameter);
-        }
-    
-        public virtual ObjectResult<string> ListarFuncionariosCoordenadoresSemOcorrenciasCriticas()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("ListarFuncionariosCoordenadoresSemOcorrenciasCriticas");
-        }
-    
-        public virtual int processarPontosPorIncumprimento()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("processarPontosPorIncumprimento");
-        }
-    
-        public virtual ObjectResult<Nullable<int>> ReportarOcorrencia(string tipo, Nullable<int> empresa, Nullable<int> codInst, Nullable<int> piso, string zona, ObjectParameter id)
-        {
-            var tipoParameter = tipo != null ?
-                new ObjectParameter("tipo", tipo) :
-                new ObjectParameter("tipo", typeof(string));
-    
-            var empresaParameter = empresa.HasValue ?
-                new ObjectParameter("empresa", empresa) :
-                new ObjectParameter("empresa", typeof(int));
-    
-            var codInstParameter = codInst.HasValue ?
-                new ObjectParameter("codInst", codInst) :
-                new ObjectParameter("codInst", typeof(int));
-    
-            var pisoParameter = piso.HasValue ?
-                new ObjectParameter("piso", piso) :
-                new ObjectParameter("piso", typeof(int));
-    
-            var zonaParameter = zona != null ?
-                new ObjectParameter("zona", zona) :
-                new ObjectParameter("zona", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("ReportarOcorrencia", tipoParameter, empresaParameter, codInstParameter, pisoParameter, zonaParameter, id);
-        }
     }
 }
