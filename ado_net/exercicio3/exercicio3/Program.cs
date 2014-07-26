@@ -42,7 +42,7 @@ namespace exercicio3
                 {
                     case 'a':
                         //Testar alinea a)
-                        a(600016234, "Instituto Superior de Engenharia de Lisboa", "Rua Conselheiro Emídio Navarro 1_ _, 1959-007 Lisboa");
+                        a(600016234, "Instituto Superior de Engenharia de Lisboa", "Rua Conselheiro Emídio Navarro 1_, 1959-007 Lisboa");
                         operation = -1;
                         break;
                     case 'b':
@@ -68,11 +68,11 @@ namespace exercicio3
                         operation = -1;
                         break;
                     case 'f':
-                    //    f();
+                    //    ...
                         operation = -1;
                         break;
                     case 'g':
-                    //    g();
+                    //    ...
                         operation = -1;
                         break;
                     case 'h':
@@ -103,12 +103,12 @@ namespace exercicio3
          **/
         static void a(int nipc, string designacao, string morada)
         {
-            using (SI2_1314v_TPEntities1 ctx = new SI2_1314v_TPEntities1())
+            using (SI2_1314v_TPEntities2 ctx = new SI2_1314v_TPEntities2())
             {
 
                 var emp = (from e in ctx.Empresas
-                           where e.nipc == nipc
-                           select e).FirstOrDefault();
+                            where e.nipc == nipc
+                            select e).FirstOrDefault();
 
                 emp.designacao = designacao;
                 emp.morada = morada;
@@ -127,7 +127,7 @@ namespace exercicio3
          **/
         static void b(System.DateTime dhEntrada, System.DateTime dhAlteracao, TipoOcorrencia tipo, int codInst, int piso, string zona, int empresa, params int[] codAI)
         {
-            using (SI2_1314v_TPEntities1 ctx = new SI2_1314v_TPEntities1())
+            using (SI2_1314v_TPEntities2 ctx = new SI2_1314v_TPEntities2())
             {
 
                 if (ctx.Empresas.Find(empresa) != null && codAI.Length <= 3)
@@ -155,7 +155,7 @@ namespace exercicio3
                             idOcorr = idOccurr,
                             areaInt = cod,
                             concluido = false,
-                            coordenador = -1   // Indicação de que o coordenador será atribuido posteriormente (Verificar se dá SqlException)
+                            coordenador = -1   // o coordenador será atribuido posteriormente
                         };
                         ctx.Trabalhoes.Add(trab);
                     }
@@ -178,7 +178,7 @@ namespace exercicio3
          **/
         static void c(int idOccurr)
         {
-            using (SI2_1314v_TPEntities1 ctx = new SI2_1314v_TPEntities1())
+            using (SI2_1314v_TPEntities2 ctx = new SI2_1314v_TPEntities2())
             {
 
                 try
@@ -218,21 +218,21 @@ namespace exercicio3
          **/
         static void d()
         {
-            using (SI2_1314v_TPEntities1 ctx = new SI2_1314v_TPEntities1())
+            using (SI2_1314v_TPEntities2 ctx = new SI2_1314v_TPEntities2())
             {
 
                 foreach (var o in ctx.Ocorrencias)
                 {
                     if (o.tipo.Equals(TipoOcorrencia.crítico.ToString())
                         &&
-                          (
+                            (
                             (!o.estado.Equals(EstadoOcorrencia.cancelado.ToString())) &&
                             (!o.estado.Equals(EstadoOcorrencia.concluído.ToString())) &&
                             (!o.estado.Equals(EstadoOcorrencia.recusado.ToString()))
-                          )
+                            )
                         &&
-                          (o.dhEntrada.AddHours(12) < DateTime.Now)
-                      )
+                            (o.dhEntrada.AddHours(12) < DateTime.Now)
+                        )
                     {
                         Console.WriteLine("A Ocorrencia de tipo crítico {0} encontra-se em incumprimento", o.id);
                         Console.WriteLine("Centro de intervenção responsável: {0}", ctx.Empresas.First(e => e.nipc == o.empresa).designacao);
@@ -240,14 +240,14 @@ namespace exercicio3
                     else
                         if (o.tipo.Equals(TipoOcorrencia.urgente.ToString())
                         &&
-                          (
+                            (
                             (!o.estado.Equals(EstadoOcorrencia.cancelado.ToString())) &&
                             (!o.estado.Equals(EstadoOcorrencia.concluído.ToString())) &&
                             (!o.estado.Equals(EstadoOcorrencia.recusado.ToString()))
-                          )
+                            )
                         &&
-                          (o.dhEntrada.AddHours(48) < DateTime.Now)
-                      )
+                            (o.dhEntrada.AddHours(48) < DateTime.Now)
+                        )
                         {
                             Console.WriteLine("A Ocorrencia de tipo urgente {0} encontra-se em incumprimento", o.id);
                             Console.WriteLine("Centro de intervenção responsável: {0}", ctx.Empresas.First(e => e.nipc == o.empresa).designacao);
@@ -263,7 +263,7 @@ namespace exercicio3
         static void e()
         {
            
-            using (SI2_1314v_TPEntities1 ctx = new SI2_1314v_TPEntities1())
+            using (SI2_1314v_TPEntities2 ctx = new SI2_1314v_TPEntities2())
             {
                 Console.WriteLine("Data de início (yyyy-mm-dd hh:m:ss.mmm)? ");
                 var beginDate = Convert.ToDateTime(Console.ReadLine());
@@ -271,9 +271,9 @@ namespace exercicio3
                 var endDate = Convert.ToDateTime(Console.ReadLine());
                 var ocorrencias = ctx.Ocorrencias.Where(o => o.estado.Equals(EstadoOcorrencia.concluído.ToString()) &&
                     o.dhAlteracao.CompareTo(beginDate) >= 0
-                                 &&
+                                    &&
                     o.dhAlteracao.CompareTo(endDate) <= 0)
-                                 .ToList();
+                                    .ToList();
 
                 if (ocorrencias.Count == 0)
                 {
@@ -313,16 +313,15 @@ namespace exercicio3
          **/
         static void f(int idOccurr)
         {
-            using (SI2_1314v_TPEntities1 ctx = new SI2_1314v_TPEntities1())
+            using (SI2_1314v_TPEntities2 ctx = new SI2_1314v_TPEntities2())
             {
-                //1º confirmar se a ocorrência está no estado "em processamento"
                 var ocorr = (from o in ctx.Ocorrencias
-                             where o.id == idOccurr
-                             select o).FirstOrDefault();
+                                where o.id == idOccurr
+                                select o).FirstOrDefault();
                 if ( ocorr.estado.Equals("em processamento"))
                 {
 
-                    ////2º verificar se a ocorrencia tem associada a si apenas uma área de intervenção
+                    // // verificar se a ocorrencia tem associada a si apenas uma área de intervenção
                     //int nrAreasInt = (from t in ctx.Trabalhoes
                     //                  where t.idOcorr == idOccurr
                     //                  where t.concluido == false
@@ -334,19 +333,13 @@ namespace exercicio3
                     //    return;
                     //}
 
-                    //2º Atribuir um coordenador (funcionário para coordenar) para a área de intervenção associada à ocorrencia
                     var trab = (from t in ctx.Trabalhoes
-                                      where t.idOcorr == idOccurr
-                                      where t.concluido == false
-                                      select t).FirstOrDefault();
-                    var coord = (from a in ctx.Afectoes
-                                    where a.areaInt == trab.areaInt
-                                    where a.éCoordenador == true
-                                    orderby (a.areaInt == trab.areaInt && a.éCoordenador == true) descending
-                                    select a).FirstOrDefault();
-                    trab.coordenador = coord.numFunc;
+                                        where t.idOcorr == idOccurr
+                                        where t.concluido == false
+                                        select t).FirstOrDefault();
 
-                    //3º alterar o estado para <em resolução>  (Nota:consideramos aqui apenas as ocorrências com um área de intervenção)
+                 //   trab.coordenador = ctx.FuncionarioComMenosOcorrenciasActivas(trab.areaInt);   Erro: o contexto não contém a definição para a função!!!!
+
                     ocorr.estado = "em resolução";
                     ctx.SaveChanges();
                 }
@@ -359,16 +352,27 @@ namespace exercicio3
 
 
         /************************************************
-          * ALINEA 3.g - Assinalar a finalização da prestação de serviço numa área de intervenção de uma dada ocorrência
+          * ALINEA 3.g - Assinalar a finalização da prestação de serviço numa área de intervenção de uma dada ocorrência.
           ************************************************/
-        static void g(int idOccurr)
+        /**
+         * Nesta alinea não estamos a fazer validação de dados, i.e. assumimos que o utilizador indica valores corretos 
+         * de idOcorr (id da ocorrência) e codAI (codigo da AreaIntervencao que deverá existir na ocorrência)
+         **/
+        static void g(int idOcorr, int codAI)
         {
-            //  ************** Vou aqui 
+            using (SI2_1314v_TPEntities2 ctx = new SI2_1314v_TPEntities2())
+            {
+                var trab = (from t in ctx.Trabalhoes
+                            where t.idOcorr == idOcorr && t.areaInt == codAI
+                            select t).FirstOrDefault();
+                trab.concluido = true;
+                ctx.SaveChanges();
+            }
         }
 
         static void h()
         {
-            using (SI2_1314v_TPEntities1 ctx = new SI2_1314v_TPEntities1())
+            using (SI2_1314v_TPEntities2 ctx = new SI2_1314v_TPEntities2())
             {
                 Console.WriteLine("Qual o id da ocorrência? ");
                 var ocorrenciaId = Convert.ToInt32(Console.ReadLine());
